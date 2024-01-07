@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table</title>
+    <!-- Include the following files CSS from Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Data Table</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Age</th>
+                </tr>
+            </thead>
+            <tbody id="tableData">
+                <!-- Table data will be loaded here using a foreach loop in PHP -->
+            </tbody>
+        </table>
+    </div>
+    <!-- Include the following files JavaScript from Bootstrap and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+    <!-- JavaScript code to fetch data from a PHP array and populate the table -->
+    <script>
+        // Sample PHP array with data
+        const data = [
+            {name: 'John Doe', age: 25},
+            {name: 'Jane Doe', age: 22},
+            {name: 'Tiago', age: 34},
+            // Add more data here
+        ];
+
+        // Fetch the tbody element from the DOM
+        const tableData = document.getElementById('tableData');
+
+        // Use a foreach loop to iterate over the data array and populate the table
+        data.forEach(function(item) {
+            const row = document.createElement('tr');
+            const nameCell = document.createElement('td');
+            const ageCell = document.createElement('td');
+
+            nameCell.textContent = item.name;
+            ageCell.textContent = item.age;
+
+            row.appendChild(nameCell);
+            row.appendChild(ageCell);
+            tableData.appendChild(row);
+        });
+    </script>
+</body>
+</html>
