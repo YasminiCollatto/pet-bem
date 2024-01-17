@@ -13,18 +13,18 @@
 <body>
     <div class="container">
         <h1 class="my-4">Cadastro de Usuário</h1>
-        <form>
+        <form id="pet-form" >
             <div class="mb-3">
-                <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" required>
+                <label for="name" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="name" name="name" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" required>
+                <input type="email" class="form-control" id="email" name="email" required>
             </div>
             <div class="mb-3">
-                <label for="senha" class="form-label">Senha</label>
-                <input type="password" class="form-control" id="senha" required>
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" class="form-control" id="password" name="password" required>
             </div>
             <div class="mb-3">
                 <label for="confirmacaoSenha" class="form-label">Confirmação de Senha</label>
@@ -45,6 +45,40 @@
     <script
         src="https://code.jquery.com/jquery-3.3.1.js"
         crossorigin="anonymous">
+
+    </script>
+    <script>
+        $(function() {
+            document.getElementById('pet-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+
+                const jsonData = JSON.stringify(data);
+
+                try {
+                    const response = await fetch('/api/user', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: jsonData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to add pet animal');
+                    }
+
+
+                    console.log('Pet animal added successfully');
+                    location.href = "/";
+
+
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+        });
     </script>
     
 </body>
