@@ -14,12 +14,14 @@
 <body>
     <div id="header"></div>
     <div class="container">
-        <h1>Data Table</h1>
+        <h1 class="my-4">Vacinas <a href="cadastrar_pet.html" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Registrar</a></h1>
+
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Age</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Pet</th>
                 </tr>
             </thead>
             <tbody id="tableData">
@@ -40,12 +42,12 @@
         $(function() {
             $("#header").load("header.html", function (response, status, xhr) {
                 if (status == "success") {
-                    $("#btn-pet").addClass("btn-dark");
+                    $("#btn-vacinas").addClass("btn-dark");
                 }
             });
             // Sample PHP array with data
             const data = [
-                {name: 'John Doe', age: 25},
+                {name: 'John Doe', age: 25, pet: 'todos'},
                 {name: 'Jane Doe', age: 22},
                 {name: 'Tiago', age: 34},
                 // Add more data here
@@ -59,12 +61,15 @@
                 const row = document.createElement('tr');
                 const nameCell = document.createElement('td');
                 const ageCell = document.createElement('td');
+                const petCell = document.createElement('td');
 
                 nameCell.textContent = item.name;
                 ageCell.textContent = item.age;
+                petCell.textContent = item.pet;
 
                 row.appendChild(nameCell);
                 row.appendChild(ageCell);
+                row.appendChild(petCell);
                 tableData.appendChild(row);
             });
         });
