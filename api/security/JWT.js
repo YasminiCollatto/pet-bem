@@ -13,12 +13,17 @@ module.exports.verifyJWT = async (req, res, next) => {
     }
 }
 
-module.exports.getUserId = async (token) => {
+module.exports.getToken = async (req) => {
+    return req.headers['x-access-token'];
+}
+
+module.exports.getUserId = async (req) => {
     try {
+        let token = this.getToken(req)
         const user = await jwt.verify(token, process.env.SECRET || "dev");
         return user._id;
     } catch (e) {
         return null;
     }
-
 }
+

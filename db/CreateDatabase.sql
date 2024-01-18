@@ -1,6 +1,6 @@
 USE PetBem;
 
-CREATE TABLE user (
+CREATE TABLE users (
     email varchar(200) not null primary key,
     is_active boolean not null default true,
     created_date datetime not null default current_timestamp,
@@ -9,9 +9,14 @@ CREATE TABLE user (
 
 );
 
-CREATE TABLE animais (
+CREATE TABLE pets (
                       id integer not null primary key auto_increment,
-                      name varchar(200) not null
+                      name varchar(200) not null,
+                      idade varchar(4) not null,
+                      tipo varchar(200) not null,
+                      raca varchar(200) not null,
+                      peso double(10) not null,
+                      dono varchar(200) not null FOREIGN KEY REFERENCES users(email)
 
 );
 SET character_set_client = utf8;
