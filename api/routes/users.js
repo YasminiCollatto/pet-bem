@@ -1,42 +1,25 @@
-const bodyParser = require('body-parser');
-const cors = require('cors');
+
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 
 
 module.exports = function (app) {
-
     const config = app.config.vars;
-    console.log(config.prefix)
+    const userCtrl = app.controllers.user
+    const security = app.security.JWT
 
-    app.post(`${config.prefix}/user`, (req, res) => {
-        const db = app.connection.database.open();
-        let sql = 'INSERT INTO user SET ?';
-        let data = req.body;
-        try {
-            db.query(sql, data, (err, result) => {
-                if (err) {
-                    res.send('Cadastrado com sucesso!');
-                }
 
-            });
-        } catch (e) {
-            res.status(500).send("Usuário existente!")
-        }
-
+    app.post(`${config.prefix}/user`, async (req, res) => {
+        await userCtrl.create(req, res);
     });
 
     // Recuperar todos os animais
-    app.post(`${config.prefix}/login`, (req, res) => {
-        const db = app.connection.database.open();
-        let sql = 'SELECT * FROM user WHERE ?';
-        let data = req.body;
-        db.query(sql, data, (err, results) => {
-            if (err) throw err;
-            res.send(results);
-        });
+    app.post(`${config.prefix}/login`, async (req, res) => {
+        await userCtrl.login(req,res);
     });
 
-    app.get(`${config.prefix}/users`, (req, res) => {
+    app.get(`${config.prefix}/users`, (req, res) => { //todo: remover
         const db = app.connection.database.open();
         let sql = 'SELECT * FROM user';
 
@@ -47,10 +30,10 @@ module.exports = function (app) {
     });
 
     // Recuperar um animal específico por ID
-    app.get(`${config.prefix}/user/:id`, (req, res) => {
-        let sql = `SELECT *
-                   FROM animais
-                   WHERE id = ${req.params.id}`;
+    app.get(`${config.prefix}/user/:email`, (req, res) => {
+        let sql = `SELECT name
+                   FROM user
+                   WHERE email = ${req.params.email}`;
 
         db.query(sql, (err, result) => {
             if (err) throw err;
@@ -72,7 +55,7 @@ module.exports = function (app) {
     });
 
     // Excluir um animal por ID
-    app.delete(`${config.prefix}/user/:email`, (req, res) => {
+    app.delete(`${config.prefix}/user/:email`, security.verifyJWT, (req, res) => {
         const db = app.connection.database.open();
         let sql = `DELETE FROM user WHERE ?`;
         let data = {

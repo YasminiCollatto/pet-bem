@@ -31,6 +31,8 @@ app.use(function (req, res, next) {
 consign({cwd: 'api'})
     .include('config')
     .then('connection')
+    .then('security')
+    .then('controllers')
     .then('routes')
     .into(app);
 

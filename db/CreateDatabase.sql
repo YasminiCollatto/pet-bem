@@ -5,7 +5,7 @@ CREATE TABLE user (
     is_active boolean not null default true,
     created_date datetime not null default current_timestamp,
     name varchar(200) not null,
-    password varchar(50) not null
+    password varchar(200) not null
 
 );
 

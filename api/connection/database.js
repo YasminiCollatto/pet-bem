@@ -12,7 +12,7 @@ module.exports.open = function (){
         });
         db.connect((err) => {
             if (err) throw err;
-            console.log('conexao aberta!');
+            console.log('connected');
         });
         return db;
     } catch (e) {

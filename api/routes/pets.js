@@ -6,7 +6,6 @@ const cors = require('cors');
 module.exports = function (app) {
     const db = app.connection.database.open();
     const config = app.config.vars;
-    console.log(config.prefix)
 
     app.use(function (req, res, next) {
 
