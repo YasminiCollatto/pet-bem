@@ -25,6 +25,7 @@ module.exports = function (app) {
             }
         },
         login: async function(req, res) {
+            console.log(2)
             let sql = 'SELECT * FROM users WHERE email = ?';
             let data = req.body;
             db.query(sql, data.email, (err, results) => {
@@ -41,6 +42,8 @@ module.exports = function (app) {
                     } else {
                         res.status(403).send("Não autorizado");
                     }
+                } else {
+                    res.status(403).send("Não autorizado");
                 }
             });
         },

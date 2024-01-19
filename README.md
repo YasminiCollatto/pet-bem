@@ -9,7 +9,7 @@
 - /db/CreateDatabase.sql (copiado no Dockerfile)
 #### Comandos para configurar o banco de dados: 
 1. build da imagem: ```docker build -t petbem .```
-2. executar a imagem: ```docker run -it -p 3306 -d petbem```
+2. executar a imagem: ```docker run -it --name petbem -p 3306 -d petbem```
 
 
 ### Desenvolvimento

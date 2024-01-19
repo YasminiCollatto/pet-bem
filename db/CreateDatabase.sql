@@ -10,15 +10,17 @@ CREATE TABLE users (
 );
 
 CREATE TABLE pets (
-                      id integer not null primary key auto_increment,
-                      name varchar(200) not null,
-                      idade varchar(4) not null,
-                      tipo varchar(200) not null,
-                      raca varchar(200) not null,
-                      peso double(10) not null,
-                      dono varchar(200) not null FOREIGN KEY REFERENCES users(email)
-
+  id integer not null primary key auto_increment,
+  name varchar(200) not null,
+  idade varchar(4) not null,
+  tipo varchar(200) not null,
+  raca varchar(200) not null,
+  peso float(10) not null,
+  email varchar(200)
 );
+
+ALTER TABLE pets ADD FOREIGN KEY (email) REFERENCES users(email);
+
 SET character_set_client = utf8;
 SET character_set_connection = utf8;
 SET character_set_results = utf8;

@@ -10,6 +10,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/' , express.static('public'));
+
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect

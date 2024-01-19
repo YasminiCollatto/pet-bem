@@ -8,6 +8,7 @@ module.exports = function (app) {
     });
 
     app.post(`${config.prefix}/login`, async (req, res) => {
+        console.log(1)
         await userCtrl.login(req,res);
     });
 
