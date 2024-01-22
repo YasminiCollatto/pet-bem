@@ -2,16 +2,22 @@
 
 const app = require('./api/server')
 const express = require("express");
+const fs = require('fs');
 
 app.use('/css', express.static('node_modules/bootstrap/dist/css'))
-console.log(__dirname)
 app.use('/js', express.static('node_modules/bootstrap/dist/js'))
 app.use('/js', express.static( 'node_modules/jquery/dist'))
 app.use('/js', express.static( 'node_modules/jquery-ajax'))
 app.use('/assets', express.static( 'public/assets'))
 
+const listEndpoints = require('express-list-endpoints');
+console.debug(listEndpoints(app))
 
-app.listen(3000, () => {
+
+app.listen(process.env.PORT || 3000, async function() {
     console.log('Aplicação em execução na porta 3000!');
 });
+
+
+
 

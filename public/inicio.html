@@ -12,7 +12,6 @@
 </head>
 <body>
     <div id="header"></div>
-
     <div class="container">
         <h1 class="my-4">Meus Pets <a href="cadastrar_pet" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Adicionar pet </a></h1>
 
@@ -67,56 +66,71 @@
 
 
     <script> 
-        $(function(){
-          $("#header").load("header.html", function(response, status, xhr) {
+        $(async function(){
+
+            $("#header").load("header.html", function(response, status, xhr) {
             if(status == "success") {
                 $("#btn-pet").addClass("btn-dark");
             }
-          });
+            });
+
+            async function listPets(){
+              const path = '/api/pets'
+
+              const response = await fetch(path, {
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'x-access-token': sessionStorage.getItem('_token')
+                  }
+              });
+
+              if (!response) {
+                  sessionStorage.clear();
+                  location.href = '/'
+              } else {
+                  const data = await response.json();
+                  const tableData = document.getElementById('pet-list');
+
+                  // Use a foreach loop to iterate over the data array and populate the table
+                  data.forEach(function(item) {
+                      const row = document.createElement('div');
+                      row.className = 'col-md-4 mt-3';
+                      const card = document.createElement('div');
+                      card.className = 'card shadow-lg';
+                      const body = document.createElement('div');
+                      body.className = 'card-body';
+                      const title = document.createElement('h5')
+                      title.className = 'card-title';
+                      title.textContent = item.nome;
+                      const details = document.createElement('p');
+                      details.className = 'card-subtitle mb-2 text-muted';
+                      details.textContent = `${item.raca} - ${item.idade} anos`
+                      const botao = document.createElement('button');
+                      botao.className = "btn btn-danger";
+                      botao.innerHTML = "<i class=\"material-symbols-outlined\">delete</i>"
+                      botao.addEventListener('click', function (){
+                          test(68)
+                      })
+
+                      body.appendChild(title);
+                      body.appendChild(details);
+                      // body.appendChild(botao);
+
+                      card.appendChild(body);
+                      row.appendChild(card);
+                      tableData.appendChild(row);
+
+                  });
+              }
+            }
+
+            await listPets();
+            function test(num){
+                alert(num)
+            }
 
 
-          const data = [
-            {nome: 'Rex', detalhes: 'Caramelo'},
-            {nome: 'Rex', detalhes: 'Caramelo'}
-   
-            // Add more data here
-        ];
-
-        // Fetch the tbody element from the DOM
-        const tableData = document.getElementById('pet-list');
-
-        // Use a foreach loop to iterate over the data array and populate the table
-        data.forEach(function(item) {
-            const row = document.createElement('div');
-            row.className = 'col-md-4 mt-3';
-            const card = document.createElement('div');
-            card.className = 'card shadow-lg';
-            const body = document.createElement('div');
-            body.className = 'card-body';
-            const title = document.createElement('h5')
-            title.className = 'card-title';
-            title.textContent = item.nome;
-            const details = document.createElement('p');
-            details.className = 'card-subtitle mb-2 text-muted';
-            details.textContent = item.detalhes;
-            
-            body.appendChild(title);
-            body.appendChild(details);
-
-            card.appendChild(body);
-            row.appendChild(card);
-            tableData.appendChild(row);
-
-            // const nameCell = document.createElement('td');
-            // const ageCell = document.createElement('td');
-
-            // nameCell.textContent = item.name;
-            // ageCell.textContent = item.age;
-
-            // row.appendChild(nameCell);
-            // row.appendChild(ageCell);
-            // tableData.appendChild(row);
-        });
 
         });
     </script> 

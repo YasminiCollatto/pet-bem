@@ -4,8 +4,10 @@ const cors = require('cors');
 
 
 module.exports = function (app) {
-    const db = app.connection.database.open();
-    const config = app.config.vars;
+    const security = app.security.JWT
+    const config = app.config.vars
+
+    const petCtrl = app.controllers.pet;
 
     app.use(function (req, res, next) {
 
@@ -26,59 +28,27 @@ module.exports = function (app) {
         next();
     });
 
-    app.post(`${config.prefix}/pet`, (req, res) => {
-        let sql = 'INSERT INTO animais SET ?';
-        let data = req.body;
-        db.query(sql, data, (err, result) => {
-            if (err) throw err;
-            res.send('Animal inserido com sucesso!');
-        });
+    app.route(`${config.prefix}/pets`)
+        .post(security.verifyJWT, async function createPet(req, res) {
+        await petCtrl.create(req, res)
+    })
+        .get(security.verifyJWT, async function listAllPets(req, res){
+        await petCtrl.list(req, res)
     });
 
-    // Recuperar todos os animais
-    app.get(`${config.prefix}/pets`, (req, res) => {
-        let sql = 'SELECT * FROM animais';
-
-        db.query(sql, (err, results) => {
-            if (err) throw err;
-            res.send(results);
-        });
+    app.route(`${config.prefix}/pets/:id`)
+        .get(security.verifyJWT, async function getPet(req, res) {
+        await petCtrl.get(req, res)
+    })
+        .put(security.verifyJWT, async function updatePet(req, res){
+        await petCtrl.update(req, res)
+    })
+        .delete(security.verifyJWT, async function removePet(req, res) {
+        await petCtrl.remove(req, res);
     });
 
-    // Recuperar um animal específico por ID
-    app.get(`${config.prefix}/pet/:id`, (req, res) => {
-        let sql = `SELECT *
-                   FROM animais
-                   WHERE id = ${req.params.id}`;
-
-        db.query(sql, (err, result) => {
-            if (err) throw err;
-            res.send(result);
-        });
-    });
-
-    // Atualizar um animal por ID
-    app.put(`${config.prefix}/pet/:id`, (req, res) => {
-        let sql = `UPDATE animais
-                   SET ?
-                   WHERE id = ${req.params.id}`;
-        let data = req.body;
-
-        db.query(sql, data, (err, result) => {
-            if (err) throw err;
-            res.send('Animal atualizado com sucesso!');
-        });
-    });
-
-    // Excluir um animal por ID
-    app.delete(`${config.prefix}/pet/:id`, (req, res) => {
-        let sql = `DELETE
-                   FROM animais
-                   WHERE id = ${req.params.id}`;
-
-        db.query(sql, (err, result) => {
-            if (err) throw err;
-            res.send('Animal excluído com sucesso!');
-        });
-    });
+    app.route(`${config.prefix}/racas/:tipo`)
+        .get(security.verifyJWT, async function listRacas(req, res) {
+            await petCtrl.listRacas(req, res);
+        })
 }

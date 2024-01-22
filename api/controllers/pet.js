@@ -2,31 +2,38 @@
 
 module.exports = function (app) {
     const security = app.security.JWT;
-    const db = app.connection.database.open();
+    const tableName = 'pets';
+    const db = app.connection.database.open(tableName);
 
     return {
         create: async function (req, res){
-            let sql = 'INSERT INTO pets SET ?';
+            let sql = `INSERT INTO ${tableName} SET ?`;
             let data = req.body;
-            let userEmail = security.getUserId(req)
-            data.dono = userEmail;
+            let userEmail = await security.getUserId(req)
+            data.email = userEmail;
             try {
                 db.query(sql, data, (err, result) => {
                     if (err) {
-                        throw new Error(err);
+                        console.error(err)
+                        res.status(500).send(err)
+                    }else {
+                        res.status(201).json({
+                            msg: 'Cadastrado com sucesso!'
+                        });
                     }
-                    res.status(201).json({
-                        msg: 'Cadastrado com sucesso!'
-                    });
+
                 });
             } catch (e) {
                 res.status(500).send(e)
             }
         },
         list: async function(req, res) {
-            let sql = 'SELECT * FROM pets WHERE dono = ?';
-            let userEmail = security.getUserId(req)
-            db.query(sql, userEmail, (err, results) => {
+            let userEmail = await security.getUserId(req);
+            let sql = `SELECT * FROM ${tableName} WHERE ?`;
+            let data = {
+                email: userEmail
+            }
+            db.query(sql, data, (err, results) => {
                 if (err) throw err;
                 res.json(results)
             });
@@ -34,8 +41,8 @@ module.exports = function (app) {
         get: async function (req, res){
             let userEmail = security.getUserId(req)
             let sql = `SELECT *
-                   FROM pets
-                   WHERE dono = ? and  id = ${req.params.id}`;
+                   FROM ${tableName}
+                   WHERE email = ? and  id = ${req.params.id}`;
 
             db.query(sql, userEmail, (err, result) => {
                 if (err) throw err;
@@ -43,41 +50,43 @@ module.exports = function (app) {
             });
         },
         update: async function (req, res){
-            let token = security.getToken(req);
-            let userEmail = security.getUserId(token);
-            if (userEmail){
-                if (userEmail == req.params.id) {
-                    let sql = `UPDATE pets
+            let userEmail = security.getUserId(req);
+            let sql = `UPDATE ${tableName}
                     SET ?
-                    WHERE id = ${req.params.id} and dono = ?`;
-                    let data = req.body;
+                    WHERE id = ${req.params.id} and email = ?`;
+            let data = req.body;
 
-                    db.query(sql, userEmail, data, (err, result) => {
-                        if (err) throw err;
-                        res.json({msg: 'Pet atualizado com sucesso!'});
-                    });
-                }
-            }
+            db.query(sql, userEmail, data, (err, result) => {
+                if (err) throw err;
+                res.json({msg: 'Pet atualizado com sucesso!'});
+            });
 
         },
         remove: async function (req, res){
             let userEmail = security.getUserId(req);
-            if (userEmail) {
-                if (userEmail == req.params.email) {
-                    let sql = `DELETE
-                               FROM pets
-                               WHERE ?`;
-                    let data = {
-                        id: req.params.id,
-                        dono: userEmail
-                    }
+            let sql = `DELETE
+                               FROM ${tableName}
+                               WHERE id= ${req.params.id} and email = ?`;
 
-                    db.query(sql, data, (err, result) => {
-                        if (err) throw err;
-                        res.json({msg: 'Pet excluído com sucesso!'});
-                    });
-                }
+
+            db.query(sql, userEmail, (err, result) => {
+                if (err) throw err;
+                res.json({msg: 'Pet excluído com sucesso!'});
+            });
+        },
+        listRacas: async function(req, res) {
+            let tipo = req.params.tipo
+            let sql = `SELECT * FROM racas WHERE ?`;
+            let data = {
+                tipo: tipo
             }
+            const ut8 = require('utf8')
+            db.query(sql, data, (err, results) => {
+                if (err) throw err;
+                const utf8 = require('utf8')
+                let response = utf8.decode(JSON.stringify(results))
+                res.json(JSON.parse(response))
+            });
         },
     }
 }

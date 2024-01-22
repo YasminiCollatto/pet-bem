@@ -2,40 +2,41 @@
 
 module.exports = function (app) {
     const security = app.security.JWT;
+    const config = app.config.vars
     const bcrypt = require('bcrypt');
     const jwt = require("jsonwebtoken");
-    const db = app.connection.database.open();
+    const tableName = 'users'
+    const db = app.connection.database.open(tableName);
     const salt = bcrypt.genSaltSync(10);
+    const Response = app.interfaces.response;
     return {
         create: async function (req, res){
-            let sql = 'INSERT INTO users SET ?';
+            let sql = `INSERT INTO ${tableName} SET ?`;
             let data = req.body;
             data.password = bcrypt.hashSync(data.password, salt);
             try {
                 db.query(sql, data, (err, result) => {
                     if (err) {
-                        throw new Error(err);
+                        Response.error(res, err)
                     }
-                    res.status(201).json({
+                    Response.success(res, {
                         msg: 'Cadastrado com sucesso!'
-                    });
+                    })
                 });
             } catch (e) {
-                res.status(500).send("Usuário existente!")
+                Response.error(res, e)
             }
         },
         login: async function(req, res) {
-            console.log(2)
-            let sql = 'SELECT * FROM users WHERE email = ?';
+            let sql = `SELECT * FROM ${tableName} WHERE email = ?;`;
             let data = req.body;
             db.query(sql, data.email, (err, results) => {
                 if (err) throw err;
-                // bcrypt.compareSync(pass, userFound.password);
                 if (results.length) {
                     let valid = bcrypt.compareSync(data.password, results[0].password);
                     if (valid) {
                         let _id = data.email;
-                        let token = jwt.sign({_id}, process.env.SECRET || "dev", {
+                        let token = jwt.sign({_id}, config.secret, {
                             expiresIn: 43200 // expires in 12 hours
                         });
                         res.json({token: token})
@@ -49,7 +50,7 @@ module.exports = function (app) {
         },
         get: async function (req, res){
             let sql = `SELECT name
-                   FROM user
+                   FROM ${tableName}
                    WHERE email = ${req.params.email}`;
 
             db.query(sql, (err, result) => {
@@ -61,7 +62,7 @@ module.exports = function (app) {
             let userEmail = security.getUserId(req);
             if (userEmail){
                 if (userEmail == req.params.email) {
-                    let sql = `UPDATE users
+                    let sql = `UPDATE ${tableName}
                    SET ?
                    WHERE email = ${req.params.email}`;
                     let data = req.body;
@@ -79,7 +80,7 @@ module.exports = function (app) {
             if (userEmail) {
                 if (userEmail == req.params.email) {
                     let sql = `DELETE
-                               FROM users
+                               FROM ${tableName}
                                WHERE ?`;
                     let data = {
                         email: new String(req.params.email)

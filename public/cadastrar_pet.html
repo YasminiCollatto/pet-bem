@@ -14,7 +14,7 @@
     <div id="header"></div>
     <div class="container">
         <h1 class="my-4">Cadastrar Pet</h1>
-        <form>
+        <form id="pet-form">
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome</label>
                 <input type="text" class="form-control" id="nome" required>
@@ -27,17 +27,15 @@
                 <label for="tipo" class="form-label">Tipo</label>
                 <select class="form-control" id="tipo" required>
                     <option></option>
-                    <option>Cachorro</option>
-                    <option>Gato</option>
-                    <option>Outro</option>
+                    <option value="C">Cachorro</option>
+                    <option value="G">Gato</option>
                   </select>
             </div>
             <div class="mb-3">
                 <label for="raca" class="form-label">Raça</label>
                 <select class="form-control" id="raca" required>
                     <option></option>
-                    <option>Select padrão</option>
-                    <option>Select padrão</option>
+
                   </select>
             </div>
 
@@ -52,12 +50,89 @@
     </div>
 
     <script> 
-        $(function(){
-          $("#header").load("header.html", function(response, status, xhr) {
-            if(status == "success") {
-                $("#btn-pet").addClass("btn-dark");
+        $(async function(){
+            $("#header").load("header.html", function(response, status, xhr) {
+                if(status == "success") {
+                    $("#btn-pet").addClass("btn-dark");
+                }
+            });
+            const path = '/api/pets';
+
+            async function save(jsonData) {
+
+                const response = await fetch(path, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: jsonData
+                });
+
+                if (!response.ok) {
+                    document.getElementById('error').classList.remove('d-none');
+                    throw new Error(response.msg);
+                } else {
+                    const data = await response.json();
+                    sessionStorage.setItem('_token', data.token);
+                    document.getElementById('message_text').innerText = "Cadastrado com sucesso";
+                    document.getElementById('message').classList.remove('d-none');
+                    setTimeout(() => {
+                        location.href = '/inicio';
+                    }, 1000)
+                }
             }
-          });
+
+            async function listRacas(tipo){
+                const response = await fetch(`/api/racas/${tipo}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept-Charset': 'utf8',
+                        'x-access-token': sessionStorage.getItem('_token')
+                    }
+                });
+                if (!response.ok) {
+                    console.error(response)
+                } else {
+                    const data = await response.json();
+                    console.log(data)
+                    const listRacasElement = document.getElementById('raca')
+                    listRacasElement.innerHTML = '<option></option>';
+                    data.forEach(item => {
+                        const row = document.createElement('option');
+                        row.value = item.id
+                        row.text = item.descricao
+                        listRacasElement.appendChild(row)
+                    })
+
+
+                }
+            }
+
+            $('#tipo').on('change', async function (e) {
+                console.log(e)
+                let tipo = document.getElementById('tipo').value;
+                await listRacas(tipo)
+            })
+
+
+
+
+          $('#pet-form').on('submit', async function (e) {
+              e.preventDefault();
+              const data = {
+                  nome: document.getElementById('nome').value,
+                  idade: document.getElementById('idade').value,
+                  tipo: document.getElementById('tipo').value,
+                  raca: document.getElementById('raca').value,
+                  peso: document.getElementById('peso').value,
+              }
+
+              const jsonData = JSON.stringify(data);
+              await save(jsonData);
+          })
+
+
     
         });
     </script> 
