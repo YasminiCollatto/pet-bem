@@ -4,28 +4,76 @@ CREATE TABLE users (
     email varchar(200) not null primary key,
     is_active boolean not null default true,
     created_date datetime not null default current_timestamp,
-    name varchar(200) not null,
+    name varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     password varchar(200) not null
 
 );
 
 CREATE TABLE pets (
-  id integer not null primary key auto_increment,
-  nome varchar(200) not null,
-  idade varchar(4) not null,
-  tipo varchar(200) not null,
-  raca varchar(200) not null,
-  peso float(10) not null,
-  email varchar(200)
+    id integer not null primary key auto_increment,
+    nome varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    idade varchar(4) not null,
+    tipo varchar(200) not null,
+    raca INT(10),
+    peso float(10) not null,
+    email varchar(200)
 );
-
-ALTER TABLE pets ADD FOREIGN KEY (email) REFERENCES users(email);
 
 CREATE TABLE racas (
-                         id INT PRIMARY KEY auto_increment,
-                         descricao VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-                         tipo CHAR(1)
+    id INT(10) PRIMARY KEY auto_increment,
+    descricao VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    tipo CHAR(1)
 );
+
+CREATE TABLE diario (
+    id INT(10) PRIMARY KEY auto_increment,
+    descricao VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    data datetime not null,
+    pet VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+);
+
+
+CREATE TABLE vacinas (
+    id INT(10) PRIMARY KEY auto_increment,
+    tipo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    data datetime not null,
+    lote VARCHAR(10) not null,
+    dose CHAR(2) not null default "U",
+
+);
+
+CREATE TABLE consultas (
+    id INT(10) PRIMARY KEY auto_increment,
+    titulo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    tipo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    data datetime not null,
+    descricao VARCHAR(250)
+);
+
+CREATE TABLE tratamentos (
+    id INT(10) PRIMARY KEY auto_increment,
+    tipo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    frequencia VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    descricao VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    inicio datetime not null,
+    fim datetime not null
+)
+
+CREATE TABLE exames (
+   id INT(10) PRIMARY KEY auto_increment,
+   titulo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+   tipo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+   data datetime not null,
+   descricao VARCHAR(250)
+);
+
+
+
+ALTER TABLE pets ADD FOREIGN KEY (email) REFERENCES users(email);
+ALTER TABLE pets ADD FOREIGN KEY (raca) REFERENCES racas(id);
+
+
+
 
 -- Definindo os tipos de animais (cachorro e gato)
 INSERT INTO racas (id, descricao, tipo) VALUES (1, 'Cachorro', 'C');

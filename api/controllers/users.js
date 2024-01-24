@@ -1,4 +1,4 @@
-/** @namespace application.app.controllers.user**/
+/** @namespace application.app.controllers.users**/
 
 module.exports = function (app) {
     const security = app.security.JWT;

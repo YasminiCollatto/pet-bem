@@ -7,7 +7,7 @@ module.exports = function (app) {
     const security = app.security.JWT
     const config = app.config.vars
 
-    const petCtrl = app.controllers.pet;
+    const petCtrl = app.controllers.pets;
 
     app.use(function (req, res, next) {
 
@@ -38,7 +38,7 @@ module.exports = function (app) {
 
     app.route(`${config.prefix}/pets/:id`)
         .get(security.verifyJWT, async function getPet(req, res) {
-        await petCtrl.get(req, res)
+        await petCtrl.get(req, res);
     })
         .put(security.verifyJWT, async function updatePet(req, res){
         await petCtrl.update(req, res)

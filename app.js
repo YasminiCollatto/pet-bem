@@ -1,5 +1,3 @@
-
-
 const app = require('./api/server')
 const express = require("express");
 const fs = require('fs');
@@ -14,8 +12,10 @@ const listEndpoints = require('express-list-endpoints');
 console.debug(listEndpoints(app))
 
 
-app.listen(process.env.PORT || 3000, async function() {
-    console.log('Aplicação em execução na porta 3000!');
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, async function() {
+    console.log(`Aplicação em execução na porta ${PORT}!`);
 });
 
 

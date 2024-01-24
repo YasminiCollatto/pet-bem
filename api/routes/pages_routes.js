@@ -40,6 +40,7 @@ module.exports = function (app) {
         res.sendFile(path.join(__dirname, '../../public', 'cadastrar_pet.html'));
     });
 
+
     app.get('/novo', function getPageNovoUsuario(req, res) {
         res.sendFile(path.join(__dirname, '../../public', 'cadastrar_usuario.html'));
     });

@@ -6,7 +6,7 @@
     <title>Pet-Bem</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="/css/bootstrap.css">
-    <script src="./js/bootstrap.bundle.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script>
     <script src="/js/jquery.slim.js"></script>
     <script src="/js/jquery.js"></script>
 </head>
@@ -16,51 +16,6 @@
         <h1 class="my-4">Meus Pets <a href="cadastrar_pet" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Adicionar pet </a></h1>
 
         <div class="row justify-content-center" id="pet-list">
-            <!-- <div class="col-md-4 mt-3">
-                <div class="card shadow-lg">
-                    <img class="card-img-top" src="download.svg" height="150" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Rex</h5>
-                        <p class="card-subtitle mb-2 text-muted">Detalhes</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mt-3">
-                <div class="card shadow-lg">
-                    <img class="card-img-top" src="download.svg" height="150" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Rex</h5>
-                        <p class="card-subtitle mb-2 text-muted">Detalhes</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mt-3">
-                <div class="card shadow-lg">
-                    <img class="card-img-top" src="download.svg" height="150" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Rex</h5>
-                        <p class="card-subtitle mb-2 text-muted">Detalhes</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mt-3">
-                <div class="card shadow-lg">
-                    <img class="card-img-top" src="download.svg" height="150" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Rex</h5>
-                        <p class="card-subtitle mb-2 text-muted">Detalhes</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mt-3">
-                <div class="card shadow-lg">
-                    <img class="card-img-top" src="download.svg" height="150" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Rex</h5>
-                        <p class="card-subtitle mb-2 text-muted">Detalhes</p>
-                    </div>
-                </div>
-            </div> -->
         </div>
     </div>
 
@@ -85,12 +40,13 @@
                   }
               });
 
-              if (!response) {
+              if (!response.ok) {
                   sessionStorage.clear();
                   location.href = '/'
               } else {
                   const data = await response.json();
                   const tableData = document.getElementById('pet-list');
+                  tableData.innerHTML = "";
 
                   // Use a foreach loop to iterate over the data array and populate the table
                   data.forEach(function(item) {
@@ -106,16 +62,27 @@
                       const details = document.createElement('p');
                       details.className = 'card-subtitle mb-2 text-muted';
                       details.textContent = `${item.raca} - ${item.idade} anos`
-                      const botao = document.createElement('button');
-                      botao.className = "btn btn-danger";
-                      botao.innerHTML = "<i class=\"material-symbols-outlined\">delete</i>"
-                      botao.addEventListener('click', function (){
-                          test(68)
+                      const editButton = document.createElement('button');
+                      editButton.className = "btn btn-outline-dnager mr-5";
+                      editButton.innerHTML = "<i class=\"material-symbols-outlined\">edit</i>"
+                      editButton
+                      editButton.addEventListener('click', function (){
+                          location.href = "cadastrar_pet?id=" + item.id
+                      })
+
+                      const removeButton = document.createElement('button');
+                      removeButton.className = "m-3 btn btn-danger ";
+                      removeButton.innerHTML = "<i class=\"material-symbols-outlined\">delete</i>";
+                      removeButton.addEventListener('click', async function (){
+                          if(confirm("Deseja realmente apagar esse Pet?")) {
+                              await removePet(item.id)
+                          }
                       })
 
                       body.appendChild(title);
                       body.appendChild(details);
-                      // body.appendChild(botao);
+                      body.appendChild(editButton);
+                      body.appendChild(removeButton);
 
                       card.appendChild(body);
                       row.appendChild(card);
@@ -125,9 +92,31 @@
               }
             }
 
+            async function removePet(id){
+                const path = '/api/pets/'+ id;
+
+                const response = await fetch(path, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': sessionStorage.getItem('_token')
+                    }
+                });
+
+                if (!response.ok) {
+                    sessionStorage.clear();
+                    location.href = '/'
+                } else {
+                    await listPets();
+                }
+            }
+
+
+
             await listPets();
             function test(num){
-                alert(num)
+                const resp = confirm(num)
+                console.log(resp)
             }
 
 

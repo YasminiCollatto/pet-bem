@@ -1,6 +1,6 @@
 module.exports = function (app) {
     const config = app.config.vars;
-    const userCtrl = app.controllers.user
+    const userCtrl = app.controllers.users
     const security = app.security.JWT
 
     app.post(`${config.prefix}/user`, async function createUser(req, res) {
@@ -8,6 +8,7 @@ module.exports = function (app) {
     });
 
     app.post(`${config.prefix}/login`, async function login(req, res) {
+        console.log(66)
         await userCtrl.login(req,res);
     });
 
