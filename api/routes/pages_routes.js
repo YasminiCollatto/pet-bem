@@ -2,12 +2,6 @@ const path = require("path");
 
 
 module.exports = function (app) {
-    const userCtrl = app.controllers.user;
-    const security = app.security.JWT
-
-
-
-
     app.get('/', function getPageLogin(req, res) {
         res.sendFile(path.join(__dirname, '../../public', 'index.html'));
     });
@@ -37,7 +31,7 @@ module.exports = function (app) {
     });
 
     app.get('/cadastrar_pet', function getPageCadastrarPet(req, res) {
-        res.sendFile(path.join(__dirname, '../../public', 'cadastrar_pet.html'));
+        res.sendFile(path.join(__dirname, '../../public', 'gerenciar_pet.html'));
     });
 
 

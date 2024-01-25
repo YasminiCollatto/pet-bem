@@ -79,11 +79,10 @@
                 });
 
                 if (!response.ok) {
-                    console.log(response)
+                    console.info(response)
                 } else {
 
                     const data = await response.json();
-                    if (!data) console.log(data)
                     await listRacas(data[0].tipo)
                     document.getElementById('nome').value = data[0].nome;
                     document.getElementById('idade').value = data[0].idade
@@ -158,7 +157,6 @@
                     console.error(response)
                 } else {
                     const data = await response.json();
-                    console.log(data)
                     const listRacasElement = document.getElementById('raca')
                     listRacasElement.innerHTML = '<option></option>';
                     data.forEach(item => {
@@ -173,7 +171,6 @@
             }
 
             $('#tipo').on('change', async function (e) {
-                console.log(e)
                 let tipo = document.getElementById('tipo').value;
                 await listRacas(tipo)
             })

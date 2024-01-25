@@ -3,19 +3,20 @@ module.exports = function (app) {
     const userCtrl = app.controllers.users
     const security = app.security.JWT
 
-    app.post(`${config.prefix}/user`, async function createUser(req, res) {
+
+    app.route(`${config.prefix}/users`)
+        .get(security.verifyJWT, async function getUser(req, res) {
+            await userCtrl.get(req, res);
+        })
+        .post(async function createUser(req, res) {
         await userCtrl.create(req, res);
-    });
+        });
 
     app.post(`${config.prefix}/login`, async function login(req, res) {
-        console.log(66)
         await userCtrl.login(req,res);
     });
 
-    app.route(`${config.prefix}/user/:email`)
-        .get(security.verifyJWT, async function getUser(req, res) {
-        await userCtrl.get(req, res);
-    })
+    app.route(`${config.prefix}/users/:email`)
         .put(security.verifyJWT, async function updateUser(req, res) {
         await userCtrl.update(req, res);
     })

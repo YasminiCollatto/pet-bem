@@ -5,7 +5,7 @@ module.exports = function (app) {
     const config = app.config.vars
     const bcrypt = require('bcrypt');
     const jwt = require("jsonwebtoken");
-    const tableName = 'users'
+    const tableName = 'usuarios'
     const db = app.connection.database.open(tableName);
     const salt = bcrypt.genSaltSync(10);
     const Response = app.interfaces.response;
@@ -49,9 +49,10 @@ module.exports = function (app) {
             });
         },
         get: async function (req, res){
-            let sql = `SELECT name
+            let userEmail = await security.getUserId(req);
+            let sql = `SELECT *
                    FROM ${tableName}
-                   WHERE email = ${req.params.email}`;
+                   WHERE email = "${userEmail}"`;
 
             db.query(sql, (err, result) => {
                 if (err) throw err;

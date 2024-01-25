@@ -13,7 +13,7 @@ module.exports.open = function (ctrl){
         });
         db.connect((err) => {
             if (err) throw err;
-            console.log(`${ctrl} connected`);
+            console.log(`${ctrl} conectado`);
         });
         return db;
     } catch (e) {

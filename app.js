@@ -9,8 +9,13 @@ app.use('/js', express.static( 'node_modules/jquery-ajax'))
 app.use('/assets', express.static( 'public/assets'))
 
 const listEndpoints = require('express-list-endpoints');
-console.debug(listEndpoints(app))
-
+let endpoints = listEndpoints(app);
+console.debug("\nEndpoints\n");
+console.debug(endpoints.filter(e => {
+    if (e.path.includes("api")) return true;
+}).map(e => {
+    return e.path;
+}))
 
 const PORT = process.env.PORT || 3000;
 

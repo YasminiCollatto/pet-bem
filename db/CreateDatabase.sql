@@ -1,6 +1,6 @@
 USE PetBem;
 
-CREATE TABLE users (
+CREATE TABLE usuarios (
     email varchar(200) not null primary key,
     is_active boolean not null default true,
     created_date datetime not null default current_timestamp,
@@ -10,7 +10,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE pets (
-    id integer not null primary key auto_increment,
+    id INT(10) not null primary key auto_increment,
     nome varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     idade varchar(4) not null,
     tipo varchar(200) not null,
@@ -29,17 +29,8 @@ CREATE TABLE diario (
     id INT(10) PRIMARY KEY auto_increment,
     descricao VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     data datetime not null,
-    pet VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
-);
-
-
-CREATE TABLE vacinas (
-    id INT(10) PRIMARY KEY auto_increment,
-    tipo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-    data datetime not null,
-    lote VARCHAR(10) not null,
-    dose CHAR(2) not null default "U",
-
+    pet VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+    email varchar(200) not null
 );
 
 CREATE TABLE consultas (
@@ -47,7 +38,8 @@ CREATE TABLE consultas (
     titulo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     tipo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     data datetime not null,
-    descricao VARCHAR(250)
+    descricao VARCHAR(250),
+    pet INT(10) not null
 );
 
 CREATE TABLE tratamentos (
@@ -56,21 +48,36 @@ CREATE TABLE tratamentos (
     frequencia VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     descricao VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     inicio datetime not null,
-    fim datetime not null
-)
+    fim datetime not null,
+    pet INT(10) not null
+);
 
 CREATE TABLE exames (
    id INT(10) PRIMARY KEY auto_increment,
    titulo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
    tipo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-   data datetime not null,
-   descricao VARCHAR(250)
+   momento datetime not null,
+   descricao VARCHAR(250),
+   pet INT(10) not null
+);
+
+CREATE TABLE vacinas (
+     id INT(10) PRIMARY KEY auto_increment,
+     tipo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+     aplicacao datetime not null,
+     lote VARCHAR(10) not null,
+     dose CHAR(1) not null default "U",
+     pet INT(10) not null
 );
 
 
-
-ALTER TABLE pets ADD FOREIGN KEY (email) REFERENCES users(email);
+ALTER TABLE pets ADD FOREIGN KEY (email) REFERENCES usuarios(email);
 ALTER TABLE pets ADD FOREIGN KEY (raca) REFERENCES racas(id);
+ALTER TABLE diario ADD FOREIGN KEY (email) REFERENCES usuarios(email);
+ALTER TABLE consultas ADD FOREIGN KEY (pet) REFERENCES pets(id);
+ALTER TABLE tratamentos ADD FOREIGN KEY (pet) REFERENCES pets(id);
+ALTER TABLE exames ADD FOREIGN KEY (pet) REFERENCES pets(id);
+ALTER TABLE vacinas ADD FOREIGN KEY (pet) REFERENCES pets(id);
 
 
 
