@@ -10,26 +10,26 @@ module.exports = function (app) {
     const petCtrl = app.controllers.pets;
 
     app.route(`${config.prefix}/pets`)
-        .post(security.verifyJWT, async function createPet(req, res) {
+        .post(security.verifyJWT, async function create(req, res) {
         await petCtrl.create(req, res)
     })
-        .get(security.verifyJWT, async function listAllPets(req, res){
+        .get(security.verifyJWT, async function list(req, res){
         await petCtrl.list(req, res)
     });
 
     app.route(`${config.prefix}/pets/:id`)
-        .get(security.verifyJWT, async function getPet(req, res) {
+        .get(security.verifyJWT, async function get(req, res) {
         await petCtrl.get(req, res);
     })
-        .put(security.verifyJWT, async function updatePet(req, res){
+        .put(security.verifyJWT, async function update(req, res){
         await petCtrl.update(req, res)
     })
-        .delete(security.verifyJWT, async function removePet(req, res) {
+        .delete(security.verifyJWT, async function remove(req, res) {
         await petCtrl.remove(req, res);
     });
 
     app.route(`${config.prefix}/racas/:tipo`)
-        .get(security.verifyJWT, async function listRacas(req, res) {
+        .get(security.verifyJWT, async function list(req, res) {
             await petCtrl.listRacas(req, res);
         })
 }

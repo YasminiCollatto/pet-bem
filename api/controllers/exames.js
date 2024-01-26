@@ -63,8 +63,10 @@ module.exports = function (app) {
                        WHERE e.id = ${req.params.id}
                          and email = "${userEmail}"`;
             let data = req.body;
+            data['e.id'] = req.body.id
             data['e.tipo'] = req.body.tipo
-            delete data.tipo
+            delete data.tipo;
+            delete data.id;
 
             db.query(sql, data, (err, result) => {
                 if (err) throw err;

@@ -48,7 +48,7 @@ CREATE TABLE tratamentos (
     frequencia VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     descricao VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     inicio datetime not null,
-    fim datetime not null,
+    fim datetime,
     pet INT(10) not null
 );
 
@@ -56,7 +56,7 @@ CREATE TABLE exames (
    id INT(10) PRIMARY KEY auto_increment,
    titulo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
    tipo VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-   momento datetime not null,
+   data datetime not null,
    descricao VARCHAR(250),
    pet INT(10) not null
 );
@@ -80,33 +80,27 @@ ALTER TABLE exames ADD FOREIGN KEY (pet) REFERENCES pets(id);
 ALTER TABLE vacinas ADD FOREIGN KEY (pet) REFERENCES pets(id);
 
 
-
-
--- Definindo os tipos de animais (cachorro e gato)
-INSERT INTO racas (id, descricao, tipo) VALUES (1, 'Cachorro', 'C');
-INSERT INTO racas (id, descricao, tipo) VALUES (2, 'Gato', 'G');
-
 -- Definindo as raças de cachorros
-INSERT INTO racas (id, descricao, tipo) VALUES (3, 'Akita', 'C');
-INSERT INTO racas (id, descricao, tipo) VALUES (4, 'Beagle', 'C');
-INSERT INTO racas (id, descricao, tipo) VALUES (5, 'Boxer', 'C');
-INSERT INTO racas (id, descricao, tipo) VALUES (6, 'Bulldog', 'C');
-INSERT INTO racas (id, descricao, tipo) VALUES (7, 'Dachshund', 'C');
-INSERT INTO racas (id, descricao, tipo) VALUES (8, 'Doberman', 'C');
-INSERT INTO racas (id, descricao, tipo) VALUES (9, 'Golden Retriever', 'C');
-INSERT INTO racas (id, descricao, tipo) VALUES (10, 'Husky', 'C');
+INSERT INTO racas (descricao, tipo) VALUES ('Akita', 'C');
+INSERT INTO racas (descricao, tipo) VALUES ('Beagle', 'C');
+INSERT INTO racas (descricao, tipo) VALUES ('Boxer', 'C');
+INSERT INTO racas (descricao, tipo) VALUES ('Bulldog', 'C');
+INSERT INTO racas (descricao, tipo) VALUES ('Dachshund', 'C');
+INSERT INTO racas (descricao, tipo) VALUES ('Doberman', 'C');
+INSERT INTO racas (descricao, tipo) VALUES ('Golden Retriever', 'C');
+INSERT INTO racas (descricao, tipo) VALUES ('Husky', 'C');
 
 -- Definindo as raças de gatos
-INSERT INTO racas (id, descricao, tipo) VALUES (11, 'Siamês', 'G');
-INSERT INTO racas (id, descricao, tipo) VALUES (12, 'Maine Coon', 'G');
-INSERT INTO racas (id, descricao, tipo) VALUES (13, 'Persa', 'G');
-INSERT INTO racas (id, descricao, tipo) VALUES (14, 'Ragdoll', 'G');
-INSERT INTO racas (id, descricao, tipo) VALUES (15, 'Sphynx', 'G');
-INSERT INTO racas (id, descricao, tipo) VALUES (16, 'Birmanês', 'G');
-INSERT INTO racas (id, descricao, tipo) VALUES (17, 'Bengal', 'G');
-INSERT INTO racas (id, descricao, tipo) VALUES (18, 'Burmilla', 'G');
-INSERT INTO racas (id, descricao, tipo) VALUES (19, 'Egípcio', 'G');
-INSERT INTO racas (id, descricao, tipo) VALUES (20, 'Britânico', 'G');
+INSERT INTO racas (descricao, tipo) VALUES ('Siamês', 'G');
+INSERT INTO racas (descricao, tipo) VALUES ('Maine Coon', 'G');
+INSERT INTO racas (descricao, tipo) VALUES ('Persa', 'G');
+INSERT INTO racas (descricao, tipo) VALUES ('Ragdoll', 'G');
+INSERT INTO racas (descricao, tipo) VALUES ('Sphynx', 'G');
+INSERT INTO racas (descricao, tipo) VALUES ('Birmanês', 'G');
+INSERT INTO racas (descricao, tipo) VALUES ('Bengal', 'G');
+INSERT INTO racas (descricao, tipo) VALUES ('Burmilla', 'G');
+INSERT INTO racas (descricao, tipo) VALUES ('Egípcio', 'G');
+INSERT INTO racas (descricao, tipo) VALUES ('Britânico', 'G');
 
 
 

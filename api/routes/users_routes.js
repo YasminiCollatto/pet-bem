@@ -5,10 +5,10 @@ module.exports = function (app) {
 
 
     app.route(`${config.prefix}/users`)
-        .get(security.verifyJWT, async function getUser(req, res) {
+        .get(security.verifyJWT, async function get(req, res) {
             await userCtrl.get(req, res);
         })
-        .post(async function createUser(req, res) {
+        .post(async function create(req, res) {
         await userCtrl.create(req, res);
         });
 
@@ -17,10 +17,10 @@ module.exports = function (app) {
     });
 
     app.route(`${config.prefix}/users/:email`)
-        .put(security.verifyJWT, async function updateUser(req, res) {
+        .put(security.verifyJWT, async function update(req, res) {
         await userCtrl.update(req, res);
     })
-        .delete(security.verifyJWT, async function removeUser(req, res) {
+        .delete(security.verifyJWT, async function remove(req, res) {
         await userCtrl.remove(req, res)
     });
 }

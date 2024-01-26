@@ -13,7 +13,7 @@
 <body>
     <div id="header"></div>
     <div class="container">
-        <h1 class="my-4">Meus Pets <a href="cadastrar_pet" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Adicionar pet </a></h1>
+        <h1 class="my-4">Meus Pets <a href="gerenciar_pet" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Adicionar pet </a></h1>
 
         <div class="row justify-content-center" id="pet-list">
         </div>
@@ -63,11 +63,11 @@
                       details.className = 'card-subtitle mb-2 text-muted';
                       details.textContent = `${item.raca} - ${item.idade} anos`
                       const editButton = document.createElement('button');
-                      editButton.className = "btn btn-outline-dnager mr-5";
+                      editButton.className = "btn mr-5";
                       editButton.innerHTML = "<i class=\"material-symbols-outlined\">edit</i>"
                       editButton
                       editButton.addEventListener('click', function (){
-                          location.href = "cadastrar_pet?id=" + item.id
+                          location.href = "gerenciar_pet?id=" + item.id
                       })
 
                       const removeButton = document.createElement('button');

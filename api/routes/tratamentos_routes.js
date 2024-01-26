@@ -5,15 +5,15 @@ module.exports = function (app) {
     const ctrl = app.controllers.tratamentos;
 
     app.route(`${config.prefix}/tratamentos`)
-        .post(security.verifyJWT, async function registro(req, res) {
+        .post(security.verifyJWT, async function create(req, res) {
         await ctrl.create(req, res)
     })
-        .get(security.verifyJWT, async function listar(req, res){
+        .get(security.verifyJWT, async function list(req, res){
         await ctrl.list(req, res)
     });
 
     app.route(`${config.prefix}/tratamentos/:id`)
-        .get(security.verifyJWT, async function getConsulta(req, res) {
+        .get(security.verifyJWT, async function get(req, res) {
         await ctrl.get(req, res);
     })
         .put(security.verifyJWT, async function update(req, res){

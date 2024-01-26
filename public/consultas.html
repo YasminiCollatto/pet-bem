@@ -9,18 +9,22 @@
     <script src="./js/bootstrap.bundle.js"></script>
     <script src="/js/jquery.slim.js"></script>
     <script src="/js/jquery.js"></script>
+    <script src="/js/moment.js"></script>
 </head>
 <body>
     <div id="header"></div>
     <div class="container">
-        <h1 class="my-4">Consultas <a href="gerenciar_pet.html" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Registrar</a></h1>
+        <h1 class="my-4">Consultas <a href="gerenciar_consulta" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Registrar</a></h1>
 
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Descrição</th>
-                    <th scope="col">Data</th>
+                    <th scope="col">Título</th>
+                    <th scope="col" class="d-none d-sm-table-cell">Tipo</th>
+                    <th scope="col" class="d-none d-sm-table-cell">Data</th>
                     <th scope="col">Pet</th>
+                    <th scope="col" class="d-none d-sm-table-cell">Descrição</th>
+                    <th scope="col">Ações</th>
                 </tr>
             </thead>
             <tbody id="tableData">
@@ -30,39 +34,112 @@
     </div>
 
     <script>
-        $(function() {
+        $(async function() {
             $("#header").load("header.html", function (response, status, xhr) {
                 if (status == "success") {
                     $("#btn-consultas").addClass("btn-dark");
                 }
             });
-            // Sample PHP array with data
-            const data = [
-                {name: 'John Doe', age: 25, pet: 'todos'},
-                {name: 'Jane Doe', age: 22},
-                {name: 'Tiago', age: 34},
-                // Add more data here
-            ];
 
-            // Fetch the tbody element from the DOM
-            const tableData = document.getElementById('tableData');
+            const path = '/api/consultas'
 
-            // Use a foreach loop to iterate over the data array and populate the table
-            data.forEach(function (item) {
-                const row = document.createElement('tr');
-                const nameCell = document.createElement('td');
-                const ageCell = document.createElement('td');
-                const petCell = document.createElement('td');
+            async function remover_registro(id){
 
-                nameCell.textContent = item.name;
-                ageCell.textContent = item.age;
-                petCell.textContent = item.pet;
+                const response = await fetch(`${path}/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': sessionStorage.getItem('_token')
+                    }
+                });
 
-                row.appendChild(nameCell);
-                row.appendChild(ageCell);
-                row.appendChild(petCell);
-                tableData.appendChild(row);
-            });
+                if (response.status == 403) {
+                    sessionStorage.clear();
+                    location.href = '/'
+                } else {
+                    await list();
+                }
+            }
+
+            async function list() {
+
+                const response = await fetch(path, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': sessionStorage.getItem('_token')
+                    }
+                });
+
+                if (response.status == 403) {
+                    sessionStorage.clear();
+                    location.href = '/'
+                } else {
+                    const data = await response.json();
+                    // Fetch the tbody element from the DOM
+                    const tableData = document.getElementById('tableData');
+                    tableData.innerHTML = "";
+
+                    // Use a foreach loop to iterate over the data array and populate the table
+                    data.forEach(function (item) {
+                        const row = document.createElement('tr');
+                        row.classList.add("justify-content-center")
+                        const tituloCell = document.createElement('td');
+                        const tipoCell = document.createElement('td');
+                        const descCell = document.createElement('td');
+                        const dataCell = document.createElement('td');
+                        const petCell = document.createElement('td');
+                        const actions = document.createElement('td');
+
+                        tituloCell.classList.add("align-middle");
+                        tipoCell.classList.add("align-middle");
+                        tipoCell.classList.add("d-none");
+                        tipoCell.classList.add("d-sm-table-cell");
+                        descCell.classList.add("align-middle");
+                        descCell.classList.add("d-none");
+                        descCell.classList.add("d-sm-table-cell");
+                        dataCell.classList.add("align-middle");
+                        dataCell.classList.add("d-none");
+                        dataCell.classList.add("d-sm-table-cell");
+                        petCell.classList.add("align-middle");
+
+                        tituloCell.textContent = item.titulo;
+                        tipoCell.textContent = item.tipo;
+                        descCell.textContent = item.descricao;
+                        dataCell.textContent = moment(item.data).format('DD/MM/YYYY');
+                        petCell.textContent = item.pet;
+                        const editButton = document.createElement('button');
+                        editButton.className = "btn mr-5";
+                        editButton.innerHTML = "<i class=\"material-symbols-outlined\">edit</i>"
+                        editButton
+                        editButton.addEventListener('click', function (){
+                            location.href = "gerenciar_consulta?id=" + item.id
+                        })
+                        const removeButton = document.createElement('button');
+                        removeButton.className = "btn btn-danger ";
+                        removeButton.innerHTML = "<i class=\"material-symbols-outlined\">delete</i>";
+                        removeButton.addEventListener('click', async function (){
+                            if(confirm("Deseja realmente apagar esse registro?")) {
+                                await remover_registro(item.id)
+                            }
+                        })
+
+                        row.appendChild(tituloCell);
+                        row.appendChild(tipoCell);
+                        row.appendChild(dataCell);
+                        row.appendChild(petCell);
+                        row.appendChild(descCell);
+
+                        actions.appendChild(editButton);
+                        actions.appendChild(removeButton);
+                        row.appendChild(actions);
+                        tableData.appendChild(row);
+                    });
+                }
+            }
+
+
+            await list();
         });
     </script>
 </body>

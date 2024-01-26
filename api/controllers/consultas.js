@@ -31,16 +31,15 @@ module.exports = function (app) {
         },
         list: async function (req, res) {
             let userEmail = await security.getUserId(req);
-            let sql = `SELECT c.*,email
-                       FROM ${tableName} AS c INNER JOIN pets ON pets.id = pet
+            let sql = `SELECT c.id, c.titulo, c.tipo, c.data, c.descricao,email, nome as pet
+                       FROM ${tableName} AS c INNER JOIN pets ON pets.id = c.pet
                        WHERE ?`;
             let data = {
                 email: userEmail
             }
             db.query(sql, data, (err, results) => {
                 if (err) throw err;
-                let response = JSON.parse(utf8.decode(JSON.stringify(results)));
-                res.json(response)
+                res.json(results)
             });
         },
         get: async function (req, res) {
@@ -52,8 +51,7 @@ module.exports = function (app) {
 
             db.query(sql, userEmail, (err, results) => {
                 if (err) throw err;
-                let response = JSON.parse(utf8.decode(JSON.stringify(results)));
-                res.json(response)
+                res.json(results)
             });
         },
         update: async function (req, res) {
@@ -63,8 +61,10 @@ module.exports = function (app) {
                        WHERE c.id = ${req.params.id}
                          and email = "${userEmail}"`;
             let data = req.body;
+            data['c.id'] = req.body.id
             data['c.tipo'] = req.body.tipo
-            delete data.tipo
+            delete data.tipo;
+            delete data.id;
 
             db.query(sql, data, (err, result) => {
                 if (err) throw err;

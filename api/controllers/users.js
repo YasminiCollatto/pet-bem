@@ -60,7 +60,7 @@ module.exports = function (app) {
             });
         },
         update: async function (req, res){
-            let userEmail = security.getUserId(req);
+            let userEmail = await security.getUserId(req);
             if (userEmail){
                 if (userEmail == req.params.email) {
                     let sql = `UPDATE ${tableName}
@@ -77,7 +77,7 @@ module.exports = function (app) {
 
         },
         remove: async function (req, res){
-            let userEmail = security.getUserId(req);
+            let userEmail = await security.getUserId(req);
             if (userEmail) {
                 if (userEmail == req.params.email) {
                     let sql = `DELETE

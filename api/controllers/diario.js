@@ -12,8 +12,7 @@ module.exports = function (app) {
             let sql = `INSERT INTO ${tableName}
                        SET ?`;
             let data = req.body;
-            let userEmail = await security.getUserId(req)
-            data.email = userEmail;
+            data.email = await security.getUserId(req);
             try {
                 db.query(sql, data, (err, result) => {
                     if (err) {
@@ -81,7 +80,6 @@ module.exports = function (app) {
 
 
             db.query(sql, {email: userEmail}, (err, result) => {
-                console.info(result)
                 if (err) throw err;
                 res.json({msg: 'Excluído com sucesso!'});
             });

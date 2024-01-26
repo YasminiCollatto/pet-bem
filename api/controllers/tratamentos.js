@@ -31,8 +31,8 @@ module.exports = function (app) {
         },
         list: async function (req, res) {
             let userEmail = await security.getUserId(req);
-            let sql = `SELECT t.*,email
-                       FROM ${tableName} AS t INNER JOIN pets ON pets.id = pet
+            let sql = `SELECT t.*,email, nome as pet
+                       FROM ${tableName} AS t INNER JOIN pets ON pets.id = t.pet
                        WHERE ?`;
             let data = {
                 email: userEmail
@@ -63,8 +63,10 @@ module.exports = function (app) {
                        WHERE t.id = ${req.params.id}
                          and email = "${userEmail}"`;
             let data = req.body;
+            data['t.id'] = req.body.id
             data['t.tipo'] = req.body.tipo
-            delete data.tipo
+            delete data.tipo;
+            delete data.id;
 
             db.query(sql, data, (err, result) => {
                 if (err) throw err;

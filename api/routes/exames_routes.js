@@ -5,15 +5,15 @@ module.exports = function (app) {
     const examesCtrl = app.controllers.exames;
 
     app.route(`${config.prefix}/exames`)
-        .post(security.verifyJWT, async function registro(req, res) {
+        .post(security.verifyJWT, async function create(req, res) {
         await examesCtrl.create(req, res)
     })
-        .get(security.verifyJWT, async function listar(req, res){
+        .get(security.verifyJWT, async function list(req, res){
         await examesCtrl.list(req, res)
     });
 
     app.route(`${config.prefix}/exames/:id`)
-        .get(security.verifyJWT, async function getConsulta(req, res) {
+        .get(security.verifyJWT, async function get(req, res) {
         await examesCtrl.get(req, res);
     })
         .put(security.verifyJWT, async function update(req, res){

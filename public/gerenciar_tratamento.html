@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Pet-Bem</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="/js/bootstrap.bundle.js"></script>
+    <script src="/js/jquery.slim.js"></script>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/moment.js"></script>
+</head>
+<body>
+<div id="header"></div>
+<div class="container">
+    <h1 class="my-4" id="pet-title">Cadastrar Tratamento</h1>
+    <input type="hidden" id="id" name="id"/>
+    <div id="pet-form">
+        <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo</label>
+            <select class="form-control" id="tipo" required>
+                <option value=""></option>
+                <option value="Procedimento">Procedimento</option>
+                <option value="Medicamento">Medicamento</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="frequencia" class="form-label">Frequência</label>
+            <select class="form-control" id="frequencia" required>
+                <option value=""></option>
+                <option value="Recorrente">Recorrente</option>
+                <option value="Contínuo">Contínuo</option>
+                <option value="Uníco">Uníco</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="inicio" class="form-label">Início</label>
+            <input type="date" class="form-control" id="inicio" required>
+        </div>
+        <div class="mb-3">
+            <label for="fim" class="form-label">Final</label>
+            <input type="date" class="form-control" id="fim" required>
+        </div>
+        <div class="mb-3">
+            <label for="descricao" class="form-label">Descrição</label>
+            <textarea type="text" class="form-control" id="descricao" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="pet" class="form-label">Pet</label>
+            <select class="form-control" id="pet" required>
+                <option value=""></option>
+            </select>
+        </div>
+
+        <button type="button" id="btn-cancelar" class="btn btn-danger">Cancelar</button>
+        <button id="btn-salvar" class="btn btn-primary">Cadastrar</button>
+        <button id="btn-atualizar" class="btn btn-primary d-none">Atualizar</button>
+    </div>
+    <div id="message" class="alert alert-success alert-dismissible d-none" role="alert">
+        <span id="message_text">Cadastrado com sucesso.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div id="error" class="alert alert-danger alert-dismissible d-none" role="alert">
+        <span id="message_error_text">Não foi possível salvar os dados.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
+<script>
+    $(async function () {
+        $("#header").load("header.html");
+        await listPets();
+
+        const path = '/api/tratamentos';
+
+        async function getTratamento(id) {
+            document.getElementById('pet-title').innerText = "Atualizar Tratamento"
+            document.getElementById('btn-atualizar').classList.remove('d-none');
+
+            document.getElementById('btn-salvar').classList.add('d-none');
+            const response = await fetch(`${path}/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': sessionStorage.getItem('_token')
+                }
+            });
+
+            if (!response.ok) {
+                console.info(response)
+            } else {
+
+                const data = await response.json();
+                document.getElementById('id').value = data[0].id;
+                document.getElementById('frequencia').value = data[0].frequencia;
+                document.getElementById('tipo').value = data[0].tipo;
+                document.getElementById('descricao').value = data[0].descricao;
+                document.getElementById('inicio').value = moment(data[0].inicio).format('yyyy-MM-DD')
+                document.getElementById('fim').value = moment(data[0].fim).format('yyyy-MM-DD')
+                document.getElementById('pet').value = data[0].pet
+
+            }
+        }
+
+        let searchParams = new URLSearchParams(window.location.search)
+        if (searchParams.has('id')) {
+            await getTratamento(searchParams.get('id'))
+        }
+
+
+        async function save(jsonData) {
+
+            const response = await fetch(path, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': sessionStorage.getItem('_token')
+                },
+                body: jsonData
+            });
+
+            if (!response.ok) {
+                document.getElementById('error').classList.remove('d-none');
+                throw new Error(response.msg);
+            } else {
+                const data = await response.json();
+                document.getElementById('message_text').innerText = "Cadastrado com sucesso";
+                document.getElementById('message').classList.remove('d-none');
+                location.href = "/tratamentos"
+            }
+        }
+
+        async function update(jsonData) {
+            const response = await fetch(`${path}/${jsonData.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': sessionStorage.getItem('_token')
+                },
+                body: JSON.stringify(jsonData)
+            });
+
+            if (!response.ok) {
+                document.getElementById('error').classList.remove('d-none');
+                throw new Error(response.msg);
+            } else {
+                document.getElementById('message_text').innerText = "Atualizado com sucesso";
+                document.getElementById('message').classList.remove('d-none');
+                location.href = "/tratamentos"
+            }
+        }
+
+        async function listPets() {
+            const response = await fetch(`/api/pets`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Charset': 'utf8',
+                    'x-access-token': sessionStorage.getItem('_token')
+                }
+            });
+            if (!response.ok) {
+                console.error(response)
+            } else {
+                const data = await response.json();
+                const listElement = document.getElementById('pet');
+                data.forEach(item => {
+                    const row = document.createElement('option');
+                    row.value = item.id
+                    row.text = item.nome
+                    listElement.appendChild(row)
+                })
+
+
+            }
+        }
+
+        $('#btn-atualizar').on('click', async function () {
+            await update({
+                id: document.getElementById('id').value,
+                frequencia: document.getElementById('frequencia').value,
+                tipo: document.getElementById('tipo').value,
+                descricao: document.getElementById('descricao').value,
+                inicio: document.getElementById('inicio').value,
+                fim: document.getElementById('fim').value,
+                pet: document.getElementById('pet').value
+            })
+        });
+
+        $('#btn-cancelar').on('click', async function () {
+            location.href = "/tratamentos"
+        });
+
+        $('#btn-salvar').on('click', async function () {
+
+            const form = {
+                frequencia: document.getElementById('frequencia').value,
+                tipo: document.getElementById('tipo').value,
+                descricao: document.getElementById('descricao').value,
+                inicio: document.getElementById('inicio').value,
+                fim: document.getElementById('fim').value,
+                pet: document.getElementById('pet').value
+            }
+
+            const jsonData = JSON.stringify(form);
+            await save(jsonData);
+        });
+
+    });
+</script>
+</body>
+</html>
