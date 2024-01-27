@@ -5,6 +5,22 @@
     src: url(/assets/google.woff2) format('woff2');
 }
 
+.bs-callout-danger {
+    border-left-color: #ce4844 !important;
+}
+
+.bs-callout-success {
+    border-left-color: #198754 !important;
+}
+
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+
 .material-symbols-outlined {
     font-family: 'Material Symbols Outlined';
     font-weight: normal;

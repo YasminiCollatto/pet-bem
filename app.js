@@ -8,7 +8,8 @@ app.use('/js', express.static( 'node_modules/jquery/dist'))
 app.use('/js', express.static( 'node_modules/jquery-ajax'))
 app.use('/js', express.static( 'node_modules/moment/locale'))
 app.use('/js', express.static( 'node_modules/moment'))
-app.use('/assets', express.static( 'public/assets'))
+app.use('/js', express.static( 'node_modules/jquery-mask-plugin/dist'))
+app.use('/assets', express.static( 'static/assets'))
 
 const listEndpoints = require('express-list-endpoints');
 let endpoints = listEndpoints(app);

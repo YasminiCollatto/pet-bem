@@ -7,9 +7,11 @@
     <title>Pet-Bem</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="/css/bootstrap.css">
-    <script src="./js/bootstrap.bundle.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script>
     <script src="/js/jquery.slim.js"></script>
     <script src="/js/jquery.js"></script>
+    <link rel="shortcut icon" href="logotipo.jpeg" type="image/x-icon">
+    <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
@@ -88,7 +90,14 @@
 
 
         })
+
+        $(document).ready(function (){
+            if(sessionStorage.getItem('_token')) {
+                location.href = "/inicio"
+            }
+        })
     </script>
+    <script src="main.js"></script>
 
 </body>
 

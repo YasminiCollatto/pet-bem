@@ -30,10 +30,16 @@
                     <a class="nav-link" href="/exames"><button id="btn-exames" class="btn btn-light"><i class="material-symbols-outlined">ecg_heart</i>Exames</button></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/"><button class="btn btn-danger"><i class="material-symbols-outlined">logout</i>Sair</button></a>
+                    <a class="nav-link"><button class="btn btn-danger" id="logout"><i class="material-symbols-outlined">logout</i>Sair</button></a>
                 </li>
             
             </ul>
         </div>
     </div>
-</nav>       
+</nav>
+<script>
+    $("#logout").on("click", function (){
+        sessionStorage.clear();
+        location.href = "/"
+    })
+</script>

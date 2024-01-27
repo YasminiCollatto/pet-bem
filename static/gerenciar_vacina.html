@@ -10,6 +10,7 @@
     <script src="/js/jquery.slim.js"></script>
     <script src="/js/jquery.js"></script>
     <script src="/js/moment.js"></script>
+    <script src="/js/jquery.mask.min.js"></script>
 </head>
 <body>
 <div id="header"></div>
@@ -18,17 +19,39 @@
     <input type="hidden" id="id" name="id"/>
     <div id="pet-form">
         <div class="mb-3">
-            <label for="descricao" class="form-label">Descrição</label>
-            <textarea type="text" class="form-control" id="descricao" required></textarea>
+            <label for="tipo" class="form-label">Tipo</label>
+            <select class="form-control" id="tipo" required>
+                <option value=""></option>
+                <option value="Gripe">Gripe</option>
+                <option value="Raiva">Raiva</option>
+                <option value="Giardíase">Giardíase</option>
+                <option value="Pro Heart">Pro Heart</option>
+                <option value="Leishmaniose">Leishmaniose</option>
+                <option value="Leptospirose">Leptospirose</option>
+                <option value="Polivalente">Polivalente</option>
+            </select>
         </div>
         <div class="mb-3">
-            <label for="data" class="form-label">Data</label>
-            <input type="date" class="form-control" id="data" required>
+            <label for="lote" class="form-label">Lote</label>
+            <input type="text" class="form-control" id="lote" required>
+        </div>
+        <div class="mb-3">
+            <label for="dose" class="form-label">Dose</label>
+            <select class="form-control" id="dose" required>
+                <option value="U">Única</option>
+                <option value="P">Primeira</option>
+                <option value="S">Segunda</option>
+                <option value="A">Adicional</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="aplicacao" class="form-label">Data</label>
+            <input type="date" class="form-control" id="aplicacao" required>
         </div>
         <div class="mb-3">
             <label for="pet" class="form-label">Pet</label>
             <select class="form-control" id="pet" required>
-                <option value="Todos">Todos</option>
+                <option value=""></option>
             </select>
         </div>
 
@@ -47,6 +70,9 @@
 </div>
 
 <script>
+    $(document).ready(function(){
+        $('#lote').mask('000/00');
+    });
     $(async function () {
         $("#header").load("header.html");
         await listPets();
@@ -72,8 +98,10 @@
 
                 const data = await response.json();
                 document.getElementById('id').value = data[0].id;
-                document.getElementById('descricao').value = data[0].descricao;
-                document.getElementById('data').value = moment(data[0].data).format('yyyy-MM-DD')
+                document.getElementById('tipo').value = data[0].tipo;
+                document.getElementById('lote').value = data[0].lote;
+                document.getElementById('dose').value = data[0].dose;
+                document.getElementById('aplicacao').value = moment(data[0].aplicacao).format('yyyy-MM-DD')
                 document.getElementById('pet').value = data[0].pet
 
             }
@@ -103,7 +131,7 @@
                 const data = await response.json();
                 document.getElementById('message_text').innerText = "Cadastrado com sucesso";
                 document.getElementById('message').classList.remove('d-none');
-                location.href = "/diario"
+                location.href = "/vacinas"
             }
         }
 
@@ -123,7 +151,7 @@
             } else {
                 document.getElementById('message_text').innerText = "Atualizado com sucesso";
                 document.getElementById('message').classList.remove('d-none');
-                location.href = "/diario"
+                location.href = "/vacinas"
             }
         }
 
@@ -143,7 +171,7 @@
                 const listElement = document.getElementById('pet');
                 data.forEach(item => {
                     const row = document.createElement('option');
-                    row.value = item.nome
+                    row.value = item.id
                     row.text = item.nome
                     listElement.appendChild(row)
                 })
@@ -155,9 +183,11 @@
         $('#btn-atualizar').on('click', async function () {
             await update({
                 id: document.getElementById('id').value,
-                descricao: document.getElementById('descricao').value,
-                data: document.getElementById('data').value,
-                pet: document.getElementById('pet').valuex
+                tipo: document.getElementById('tipo').value,
+                lote: document.getElementById('lote').value,
+                dose: document.getElementById('dose').value,
+                aplicacao: document.getElementById('aplicacao').value,
+                pet: document.getElementById('pet').value
             })
         });
 
@@ -165,8 +195,10 @@
         $('#btn-salvar').on('click', async function () {
 
             const form = {
-                descricao: document.getElementById('descricao').value,
-                data: document.getElementById('data').value,
+                tipo: document.getElementById('tipo').value,
+                lote: document.getElementById('lote').value,
+                dose: document.getElementById('dose').value,
+                aplicacao: document.getElementById('aplicacao').value,
                 pet: document.getElementById('pet').value
             }
 
