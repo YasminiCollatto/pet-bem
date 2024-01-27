@@ -88,8 +88,13 @@
             });
 
             if (!response.ok) {
-                console.info(response)
+                document.getElementById('error').classList.remove('d-none');
+                if (response.status == 403) {
+                    sessionStorage.clear();
+                    location.href = '/'
+                }
             } else {
+                document.getElementById('error').classList.add('d-none');
 
                 const data = await response.json();
                 document.getElementById('id').value = data[0].id;
@@ -121,8 +126,12 @@
 
             if (!response.ok) {
                 document.getElementById('error').classList.remove('d-none');
-                throw new Error(response.msg);
+                if (response.status == 403) {
+                    sessionStorage.clear();
+                    location.href = '/'
+                }
             } else {
+                document.getElementById('error').classList.add('d-none');
                 const data = await response.json();
                 document.getElementById('message_text').innerText = "Cadastrado com sucesso";
                 document.getElementById('message').classList.remove('d-none');
@@ -142,7 +151,10 @@
 
             if (!response.ok) {
                 document.getElementById('error').classList.remove('d-none');
-                throw new Error(response.msg);
+                if (response.status == 403) {
+                    sessionStorage.clear();
+                    location.href = '/'
+                }
             } else {
                 document.getElementById('message_text').innerText = "Atualizado com sucesso";
                 document.getElementById('message').classList.remove('d-none');
@@ -160,7 +172,11 @@
                 }
             });
             if (!response.ok) {
-                console.error(response)
+                document.getElementById('error').classList.remove('d-none');
+                if (response.status == 403) {
+                    sessionStorage.clear();
+                    location.href = '/'
+                }
             } else {
                 const data = await response.json();
                 const listElement = document.getElementById('pet');

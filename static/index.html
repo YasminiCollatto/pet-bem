@@ -71,8 +71,12 @@
 
         if (!response.ok) {
             document.getElementById('error').classList.remove('d-none');
-            throw new Error('Usuário não encontrado!');
+            if (response.status == 403) {
+                sessionStorage.clear();
+                location.href = '/'
+            }
         } else {
+            document.getElementById('error').classList.add('d-none');
             const data = await response.json();
             sessionStorage.setItem('_token', data.token);
             document.getElementById('message_text').innerText = "Login com sucesso";

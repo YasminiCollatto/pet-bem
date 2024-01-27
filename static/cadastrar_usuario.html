@@ -69,8 +69,13 @@
             });
 
             if (!response.ok) {
-                throw new Error('Usuário não cadastrado!');
+                document.getElementById('error').classList.remove('d-none');
+                if (response.status == 403) {
+                    sessionStorage.clear();
+                    location.href = '/'
+                }
             } else {
+                document.getElementById('error').classList.add('d-none');
                 const data = await response.json();
                 document.getElementById('message_text').innerText = data.msg;
                 document.getElementById('message').classList.remove('d-none');

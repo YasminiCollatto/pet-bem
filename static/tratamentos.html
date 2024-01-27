@@ -55,10 +55,14 @@
                 }
             });
 
-            if (response.status == 403) {
-                sessionStorage.clear();
-                location.href = '/'
+            if (!response.ok) {
+                document.getElementById('error').classList.remove('d-none');
+                if (response.status == 403) {
+                    sessionStorage.clear();
+                    location.href = '/'
+                }
             } else {
+                document.getElementById('error').classList.add('d-none');
                 await list();
             }
         }
@@ -73,10 +77,14 @@
                 }
             });
 
-            if (response.status == 403) {
-                sessionStorage.clear();
-                location.href = '/'
+            if (!response.ok) {
+                document.getElementById('error').classList.remove('d-none');
+                if (response.status == 403) {
+                    sessionStorage.clear();
+                    location.href = '/'
+                }
             } else {
+                document.getElementById('error').classList.add('d-none');
                 const data = await response.json();
                 // Fetch the tbody element from the DOM
                 const tableData = document.getElementById('tableData');
