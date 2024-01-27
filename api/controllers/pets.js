@@ -1,6 +1,4 @@
 /** @namespace application.app.controllers.pets**/
-
-const utf8 = require("utf8");
 module.exports = function (app) {
     const security = app.security.JWT;
     const tableName = 'pets';
@@ -8,8 +6,9 @@ module.exports = function (app) {
     const utf8 = require('utf8')
 
     return {
-        create: async function (req, res){
-            let sql = `INSERT INTO ${tableName} SET ?`;
+        create: async function (req, res) {
+            let sql = `INSERT INTO ${tableName}
+                       SET ?`;
             let data = req.body;
             let userEmail = await security.getUserId(req)
             data.email = userEmail;
@@ -18,7 +17,7 @@ module.exports = function (app) {
                     if (err) {
                         console.error(err)
                         res.status(500).send(err)
-                    }else {
+                    } else {
                         res.status(201).json({
                             msg: 'Cadastrado com sucesso!'
                         });
@@ -29,9 +28,12 @@ module.exports = function (app) {
                 res.status(500).send(e)
             }
         },
-        list: async function(req, res) {
+        list: async function (req, res) {
             let userEmail = await security.getUserId(req);
-            let sql = `SELECT pets.id,nome,idade,descricao as raca FROM ${tableName} INNER JOIN racas ON pets.raca = racas.id WHERE ?`;
+            let sql = `SELECT pets.id, nome, idade, descricao as raca
+                       FROM ${tableName}
+                                INNER JOIN racas ON pets.raca = racas.id
+                       WHERE ?`;
             let data = {
                 email: userEmail
             }
@@ -41,11 +43,12 @@ module.exports = function (app) {
                 res.json(response)
             });
         },
-        get: async function (req, res){
+        get: async function (req, res) {
             let userEmail = await security.getUserId(req)
             let sql = `SELECT *
-                   FROM ${tableName}
-                   WHERE email = ? and  id = ${req.params.id}`;
+                       FROM ${tableName}
+                       WHERE email = ?
+                         and id = ${req.params.id}`;
 
             db.query(sql, userEmail, (err, results) => {
                 if (err) throw err;
@@ -53,9 +56,12 @@ module.exports = function (app) {
                 res.json(response)
             });
         },
-        update: async function (req, res){
+        update: async function (req, res) {
             let userEmail = await security.getUserId(req);
-            let sql = `UPDATE ${tableName} SET ? WHERE id = ${req.params.id} and email = "${userEmail}"`;
+            let sql = `UPDATE ${tableName}
+                       SET ?
+                       WHERE id = ${req.params.id}
+                         and email = "${userEmail}"`;
             let data = req.body;
 
             db.query(sql, data, (err, result) => {
@@ -64,12 +70,13 @@ module.exports = function (app) {
             });
 
         },
-        remove: async function (req, res){
+        remove: async function (req, res) {
             let userEmail = await security.getUserId(req);
 
             let sql = `DELETE
-                               FROM ${tableName}
-                               WHERE id=${req.params.id} and ?`;
+                       FROM ${tableName}
+                       WHERE id = ${req.params.id}
+                         and ?`;
 
 
             db.query(sql, {email: userEmail}, (err, result) => {
@@ -78,9 +85,11 @@ module.exports = function (app) {
                 res.json({msg: 'Pet excluído com sucesso!'});
             });
         },
-        listRacas: async function(req, res) {
+        listRacas: async function (req, res) {
             let tipo = req.params.tipo
-            let sql = `SELECT * FROM racas WHERE ?`;
+            let sql = `SELECT *
+                       FROM racas
+                       WHERE ?`;
             let data = {
                 tipo: tipo
             }

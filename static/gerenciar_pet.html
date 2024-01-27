@@ -11,199 +11,198 @@
     <script src="/js/jquery.js"></script>
 </head>
 <body>
-    <div id="header"></div>
-    <div class="container">
-        <h1 class="my-4" id="pet-title">Cadastrar Pet</h1>
-        <input type="hidden" id="id" name="id"/>
-        <div id="pet-form">
-            <div class="mb-3">
-                <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" required>
-            </div>
-            <div class="mb-3">
-                <label for="idade" class="form-label">Idade</label>
-                <input type="number" placeholder="Idade em anos" class="form-control" id="idade" required>
-            </div>
-            <div class="mb-3">
-                <label for="tipo" class="form-label">Tipo</label>
-                <select class="form-control" id="tipo" required>
-                    <option></option>
-                    <option value="C">Cachorro</option>
-                    <option value="G">Gato</option>
-                  </select>
-            </div>
-            <div class="mb-3">
-                <label for="raca" class="form-label">Raça</label>
-                <select class="form-control" id="raca" required>
-                    <option></option>
+<div id="header"></div>
+<div class="container">
+    <h1 class="my-4" id="pet-title">Cadastrar Pet</h1>
+    <input type="hidden" id="id" name="id"/>
+    <div id="pet-form">
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="nome" required>
+        </div>
+        <div class="mb-3">
+            <label for="idade" class="form-label">Idade</label>
+            <input type="number" placeholder="Idade em anos" class="form-control" id="idade" required>
+        </div>
+        <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo</label>
+            <select class="form-control" id="tipo" required>
+                <option></option>
+                <option value="C">Cachorro</option>
+                <option value="G">Gato</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="raca" class="form-label">Raça</label>
+            <select class="form-control" id="raca" required>
+                <option></option>
 
-                  </select>
-            </div>
+            </select>
+        </div>
 
-            <div class="mb-3">
-                <label for="peso" class="form-label">Peso (kg)</label>
-                <input type="number" class="form-control" id="peso" required>
-            </div>
-        
-            <button type="reset" class="btn btn-danger">Limpar</button>
-            <button id="btn-salvar" class="btn btn-primary">Cadastrar</button>
-            <button id="btn-atualizar" class="btn btn-primary d-none">Atualizar</button>
+        <div class="mb-3">
+            <label for="peso" class="form-label">Peso (kg)</label>
+            <input type="number" class="form-control" id="peso" required>
         </div>
-        <div id="message" class="alert alert-success alert-dismissible d-none" role="alert">
-            <span id="message_text">Cadastrado com sucesso.</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <div id="error" class="alert alert-danger alert-dismissible d-none" role="alert">
-            <span id="message_error_text">Não foi possível salvar os dados.</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+
+        <button type="reset" class="btn btn-danger">Limpar</button>
+        <button id="btn-salvar" class="btn btn-primary">Cadastrar</button>
+        <button id="btn-atualizar" class="btn btn-primary d-none">Atualizar</button>
     </div>
+    <div id="message" class="alert alert-success alert-dismissible d-none" role="alert">
+        <span id="message_text">Cadastrado com sucesso.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div id="error" class="alert alert-danger alert-dismissible d-none" role="alert">
+        <span id="message_error_text">Não foi possível salvar os dados.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
 
-    <script> 
-        $(async function(){
-            $("#header").load("header.html");
+<script>
+    $(async function () {
+        $("#header").load("header.html");
 
-            const path = '/api/pets';
+        const path = '/api/pets';
 
-            async function getPet(id){
-                document.getElementById('pet-title').innerText = "Atualizar Pet"
-                document.getElementById('btn-atualizar').classList.remove('d-none');
+        async function getPet(id) {
+            document.getElementById('pet-title').innerText = "Atualizar Pet"
+            document.getElementById('btn-atualizar').classList.remove('d-none');
 
-                document.getElementById('btn-salvar').classList.add('d-none');
-                const response = await fetch(path + "/" + id, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': sessionStorage.getItem('_token')
-                    }
-                });
-
-                if (!response.ok) {
-                    console.info(response)
-                } else {
-
-                    const data = await response.json();
-                    await listRacas(data[0].tipo)
-                    document.getElementById('nome').value = data[0].nome;
-                    document.getElementById('idade').value = data[0].idade
-                    document.getElementById('tipo').value = data[0].tipo
-                    document.getElementById('raca').value = data[0].raca
-                    document.getElementById('peso').value = data[0].peso
-                    document.getElementById('id').value = data[0].id
-
+            document.getElementById('btn-salvar').classList.add('d-none');
+            const response = await fetch(path + "/" + id, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': sessionStorage.getItem('_token')
                 }
-            }
-
-            let searchParams = new URLSearchParams(window.location.search)
-            if (searchParams.has('id')) {
-                await getPet(searchParams.get('id'))
-            }
-
-
-            async function save(jsonData) {
-
-                const response = await fetch(path, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': sessionStorage.getItem('_token')
-                    },
-                    body: jsonData
-                });
-
-                if (!response.ok) {
-                    document.getElementById('error').classList.remove('d-none');
-                    throw new Error(response.msg);
-                } else {
-                    const data = await response.json();
-                    document.getElementById('message_text').innerText = "Cadastrado com sucesso";
-                    document.getElementById('message').classList.remove('d-none');
-                    location.href = "/inicio"
-                }
-            }
-
-            async function update(jsonData) {
-                jsonData.raca = Number(jsonData.raca)
-                const response = await fetch(`${path}/${jsonData.id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': sessionStorage.getItem('_token')
-                    },
-                    body: JSON.stringify(jsonData)
-                });
-
-                if (!response.ok) {
-                    document.getElementById('error').classList.remove('d-none');
-                    throw new Error(response.msg);
-                } else {
-                    const data = await response.json();
-                    document.getElementById('message_text').innerText = "Atualizado com sucesso";
-                    document.getElementById('message').classList.remove('d-none');
-                    location.href = "/inicio"
-                }
-            }
-
-            async function listRacas(tipo){
-                const response = await fetch(`/api/racas/${tipo}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept-Charset': 'utf8',
-                        'x-access-token': sessionStorage.getItem('_token')
-                    }
-                });
-                if (!response.ok) {
-                    console.error(response)
-                } else {
-                    const data = await response.json();
-                    const listRacasElement = document.getElementById('raca')
-                    listRacasElement.innerHTML = '<option></option>';
-                    data.forEach(item => {
-                        const row = document.createElement('option');
-                        row.value = item.id
-                        row.text = item.descricao
-                        listRacasElement.appendChild(row)
-                    })
-
-
-                }
-            }
-
-            $('#tipo').on('change', async function (e) {
-                let tipo = document.getElementById('tipo').value;
-                await listRacas(tipo)
-            })
-
-            $('#btn-atualizar').on('click', async function() {
-                await update({
-                    id: document.getElementById('id').value,
-                    nome: document.getElementById('nome').value,
-                    idade: document.getElementById('idade').value,
-                    tipo: document.getElementById('tipo').value,
-                    raca: Number(document.getElementById('raca').value),
-                    peso: document.getElementById('peso').value
-                })
             });
 
+            if (!response.ok) {
+                console.info(response)
+            } else {
 
-          $('#btn-salvar').on('click', async function () {
+                const data = await response.json();
+                await listRacas(data[0].tipo)
+                document.getElementById('nome').value = data[0].nome;
+                document.getElementById('idade').value = data[0].idade
+                document.getElementById('tipo').value = data[0].tipo
+                document.getElementById('raca').value = data[0].raca
+                document.getElementById('peso').value = data[0].peso
+                document.getElementById('id').value = data[0].id
 
-              const data = {
-                  nome: document.getElementById('nome').value,
-                  idade: document.getElementById('idade').value,
-                  tipo: document.getElementById('tipo').value,
-                  raca: document.getElementById('raca').value,
-                  peso: document.getElementById('peso').value,
-              }
+            }
+        }
 
-              const jsonData = JSON.stringify(data);
-              await save(jsonData);
-          })
+        let searchParams = new URLSearchParams(window.location.search)
+        if (searchParams.has('id')) {
+            await getPet(searchParams.get('id'))
+        }
 
 
-    
+        async function save(jsonData) {
+
+            const response = await fetch(path, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': sessionStorage.getItem('_token')
+                },
+                body: jsonData
+            });
+
+            if (!response.ok) {
+                document.getElementById('error').classList.remove('d-none');
+                throw new Error(response.msg);
+            } else {
+                const data = await response.json();
+                document.getElementById('message_text').innerText = "Cadastrado com sucesso";
+                document.getElementById('message').classList.remove('d-none');
+                location.href = "/inicio"
+            }
+        }
+
+        async function update(jsonData) {
+            jsonData.raca = Number(jsonData.raca)
+            const response = await fetch(`${path}/${jsonData.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': sessionStorage.getItem('_token')
+                },
+                body: JSON.stringify(jsonData)
+            });
+
+            if (!response.ok) {
+                document.getElementById('error').classList.remove('d-none');
+                throw new Error(response.msg);
+            } else {
+                const data = await response.json();
+                document.getElementById('message_text').innerText = "Atualizado com sucesso";
+                document.getElementById('message').classList.remove('d-none');
+                location.href = "/inicio"
+            }
+        }
+
+        async function listRacas(tipo) {
+            const response = await fetch(`/api/racas/${tipo}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Charset': 'utf8',
+                    'x-access-token': sessionStorage.getItem('_token')
+                }
+            });
+            if (!response.ok) {
+                console.error(response)
+            } else {
+                const data = await response.json();
+                const listRacasElement = document.getElementById('raca')
+                listRacasElement.innerHTML = '<option></option>';
+                data.forEach(item => {
+                    const row = document.createElement('option');
+                    row.value = item.id
+                    row.text = item.descricao
+                    listRacasElement.appendChild(row)
+                })
+
+
+            }
+        }
+
+        $('#tipo').on('change', async function (e) {
+            let tipo = document.getElementById('tipo').value;
+            await listRacas(tipo)
+        })
+
+        $('#btn-atualizar').on('click', async function () {
+            await update({
+                id: document.getElementById('id').value,
+                nome: document.getElementById('nome').value,
+                idade: document.getElementById('idade').value,
+                tipo: document.getElementById('tipo').value,
+                raca: Number(document.getElementById('raca').value),
+                peso: document.getElementById('peso').value
+            })
         });
-    </script> 
+
+
+        $('#btn-salvar').on('click', async function () {
+
+            const data = {
+                nome: document.getElementById('nome').value,
+                idade: document.getElementById('idade').value,
+                tipo: document.getElementById('tipo').value,
+                raca: document.getElementById('raca').value,
+                peso: document.getElementById('peso').value,
+            }
+
+            const jsonData = JSON.stringify(data);
+            await save(jsonData);
+        })
+
+
+    });
+</script>
 </body>
 </html>

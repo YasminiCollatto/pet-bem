@@ -1,6 +1,4 @@
 /** @namespace application.app.controllers.diario**/
-
-const utf8 = require("utf8");
 module.exports = function (app) {
     const security = app.security.JWT;
     const tableName = 'diario';

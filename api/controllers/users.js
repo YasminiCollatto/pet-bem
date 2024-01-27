@@ -1,5 +1,4 @@
 /** @namespace application.app.controllers.users**/
-
 module.exports = function (app) {
     const security = app.security.JWT;
     const config = app.config.vars
@@ -8,10 +7,10 @@ module.exports = function (app) {
     const tableName = 'usuarios'
     const db = app.connection.database.open(tableName);
     const salt = bcrypt.genSaltSync(10);
-    const Response = app.interfaces.response;
     return {
-        create: async function (req, res){
-            let sql = `INSERT INTO ${tableName} SET ?`;
+        create: async function (req, res) {
+            let sql = `INSERT INTO ${tableName}
+                       SET ?`;
             let data = req.body;
             data.password = bcrypt.hashSync(data.password, salt);
             try {
@@ -27,8 +26,10 @@ module.exports = function (app) {
                 Response.error(res, e)
             }
         },
-        login: async function(req, res) {
-            let sql = `SELECT * FROM ${tableName} WHERE email = ?;`;
+        login: async function (req, res) {
+            let sql = `SELECT *
+                       FROM ${tableName}
+                       WHERE email = ?;`;
             let data = req.body;
             db.query(sql, data.email, (err, results) => {
                 if (err) throw err;
@@ -48,24 +49,24 @@ module.exports = function (app) {
                 }
             });
         },
-        get: async function (req, res){
+        get: async function (req, res) {
             let userEmail = await security.getUserId(req);
             let sql = `SELECT *
-                   FROM ${tableName}
-                   WHERE email = "${userEmail}"`;
+                       FROM ${tableName}
+                       WHERE email = "${userEmail}"`;
 
             db.query(sql, (err, result) => {
                 if (err) throw err;
                 res.send(result);
             });
         },
-        update: async function (req, res){
+        update: async function (req, res) {
             let userEmail = await security.getUserId(req);
-            if (userEmail){
+            if (userEmail) {
                 if (userEmail == req.params.email) {
                     let sql = `UPDATE ${tableName}
-                   SET ?
-                   WHERE email = ${req.params.email}`;
+                               SET ?
+                               WHERE email = ${req.params.email}`;
                     let data = req.body;
 
                     db.query(sql, data, (err, result) => {
@@ -76,7 +77,7 @@ module.exports = function (app) {
             }
 
         },
-        remove: async function (req, res){
+        remove: async function (req, res) {
             let userEmail = await security.getUserId(req);
             if (userEmail) {
                 if (userEmail == req.params.email) {

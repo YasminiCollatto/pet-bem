@@ -14,7 +14,8 @@
 <body>
 <div id="header"></div>
 <div class="container">
-    <h1 class="my-4">Exames <a href="gerenciar_exame" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Registrar</a></h1>
+    <h1 class="my-4">Exames <a href="gerenciar_exame" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Registrar</a>
+    </h1>
 
     <table class="table">
         <thead>
@@ -28,13 +29,12 @@
         </tr>
         </thead>
         <tbody id="tableData">
-        <!-- Table data will be loaded here using a foreach loop in PHP -->
         </tbody>
     </table>
 </div>
 
 <script>
-    $(async function() {
+    $(async function () {
         $("#header").load("header.html", function (response, status, xhr) {
             if (status == "success") {
                 $("#btn-exames").addClass("btn-dark");
@@ -43,7 +43,7 @@
 
         const path = '/api/exames'
 
-        async function remover_registro(id){
+        async function remover_registro(id) {
 
             const response = await fetch(`${path}/${id}`, {
                 method: 'DELETE',
@@ -112,14 +112,14 @@
                     editButton.className = "btn mr-5";
                     editButton.innerHTML = "<i class=\"material-symbols-outlined\">edit</i>"
                     editButton
-                    editButton.addEventListener('click', function (){
+                    editButton.addEventListener('click', function () {
                         location.href = "gerenciar_exame?id=" + item.id
                     })
                     const removeButton = document.createElement('button');
                     removeButton.className = "btn btn-danger ";
                     removeButton.innerHTML = "<i class=\"material-symbols-outlined\">delete</i>";
-                    removeButton.addEventListener('click', async function (){
-                        if(confirm("Deseja realmente apagar esse registro?")) {
+                    removeButton.addEventListener('click', async function () {
+                        if (confirm("Deseja realmente apagar esse registro?")) {
                             await remover_registro(item.id)
                         }
                     })

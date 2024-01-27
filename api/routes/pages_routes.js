@@ -1,7 +1,5 @@
-const path = require("path");
-
-
 module.exports = function (app) {
+    const path = require("path");
     app.get('/', function getPageLogin(req, res) {
         res.sendFile(path.join(__dirname, '../../static', 'index.html'));
     });

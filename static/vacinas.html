@@ -14,30 +14,8 @@
 <body>
 <div id="header"></div>
 <div class="container">
-    <h1 class="my-4">Vacinas <a href="gerenciar_vacina" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Registrar</a></h1>
-
-
-<!--    <button id="btn-gripe" class="m-3 btn btn-outline-danger">-->
-<!--        <i class="material-symbols-outlined">vaccines</i>Gripe-->
-<!--    </button>-->
-<!--    <button id="btn-raiva" class="m-3 btn btn-outline-danger">-->
-<!--        <i class="material-symbols-outlined">vaccines</i>Raiva-->
-<!--    </button>-->
-<!--    <button id="btn-giardiase" class="m-3 btn btn-outline-danger">-->
-<!--        <i class="material-symbols-outlined">vaccines</i>Giardíase-->
-<!--    </button>-->
-<!--    <button id="btn-heart" class="m-3 btn btn-outline-danger">-->
-<!--        <i class="material-symbols-outlined">vaccines</i>Pro Heart-->
-<!--    </button>-->
-<!--    <button id="btn-leishmaniose" class="m-3 btn btn-outline-danger">-->
-<!--        <i class="material-symbols-outlined">vaccines</i>Leishmaniose-->
-<!--    </button>-->
-<!--    <button id="btn-leptospirose" class="m-3 btn btn-outline-danger">-->
-<!--        <i class="material-symbols-outlined">vaccines</i>Leptospirose-->
-<!--    </button>-->
-<!--    <button id="btn-polivalente" class="m-3 btn btn-outline-danger">-->
-<!--        <i class="material-symbols-outlined">vaccines</i>Polivalente-->
-<!--    </button>-->
+    <h1 class="my-4">Vacinas <a href="gerenciar_vacina" class="mx-5 btn btn-success"><i
+            class="material-symbols-outlined">add</i>Registrar</a></h1>
 
     <table class="table">
         <thead>
@@ -52,13 +30,12 @@
         </tr>
         </thead>
         <tbody id="tableData">
-        <!-- Table data will be loaded here using a foreach loop in PHP -->
         </tbody>
     </table>
 </div>
 
 <script>
-    $(async function() {
+    $(async function () {
         $("#header").load("header.html", function (response, status, xhr) {
             if (status == "success") {
                 $("#btn-tratamentos").addClass("btn-dark");
@@ -67,7 +44,7 @@
 
         const path = '/api/vacinas'
 
-        async function remover_registro(id){
+        async function remover_registro(id) {
 
             const response = await fetch(`${path}/${id}`, {
                 method: 'DELETE',
@@ -136,14 +113,14 @@
                     editButton.className = "btn mr-5";
                     editButton.innerHTML = "<i class=\"material-symbols-outlined\">edit</i>"
                     editButton
-                    editButton.addEventListener('click', function (){
+                    editButton.addEventListener('click', function () {
                         location.href = "gerenciar_vacina?id=" + item.id
                     })
                     const removeButton = document.createElement('button');
                     removeButton.className = "btn btn-danger ";
                     removeButton.innerHTML = "<i class=\"material-symbols-outlined\">delete</i>";
-                    removeButton.addEventListener('click', async function (){
-                        if(confirm("Deseja realmente apagar esse registro?")) {
+                    removeButton.addEventListener('click', async function () {
+                        if (confirm("Deseja realmente apagar esse registro?")) {
                             await remover_registro(item.id)
                         }
                     })

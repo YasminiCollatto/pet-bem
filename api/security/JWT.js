@@ -7,7 +7,7 @@ module.exports.verifyJWT = async function verifyJWT(req, res, next) {
         if (!token) return res.status(403).json({msg: "Não autorizado"});
         req.user = await jwt.verify(token, process.env.SECRET || "dev");
         next();
-    } catch(e) {
+    } catch (e) {
         res.status(403).json({msg: "Não autorizado"})
     }
 }

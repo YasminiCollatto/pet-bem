@@ -1,6 +1,4 @@
 /** @namespace application.app.controllers.consultas**/
-
-const utf8 = require("utf8");
 module.exports = function (app) {
     const security = app.security.JWT;
     const tableName = 'consultas';
@@ -12,7 +10,6 @@ module.exports = function (app) {
             let sql = `INSERT INTO ${tableName}
                        SET ?`;
             let data = req.body;
-            let userEmail = await security.getUserId(req)
             try {
                 db.query(sql, data, (err, result) => {
                     if (err) {
@@ -31,8 +28,9 @@ module.exports = function (app) {
         },
         list: async function (req, res) {
             let userEmail = await security.getUserId(req);
-            let sql = `SELECT c.id, c.titulo, c.tipo, c.data, c.descricao,email, nome as pet
-                       FROM ${tableName} AS c INNER JOIN pets ON pets.id = c.pet
+            let sql = `SELECT c.id, c.titulo, c.tipo, c.data, c.descricao, email, nome as pet
+                       FROM ${tableName} AS c
+                                INNER JOIN pets ON pets.id = c.pet
                        WHERE ?`;
             let data = {
                 email: userEmail
@@ -44,8 +42,9 @@ module.exports = function (app) {
         },
         get: async function (req, res) {
             let userEmail = await security.getUserId(req)
-            let sql = `SELECT c.*,email
-                       FROM ${tableName} AS c LEFT JOIN pets ON pets.id = pet
+            let sql = `SELECT c.*, email
+                       FROM ${tableName} AS c
+                                LEFT JOIN pets ON pets.id = pet
                        WHERE email = ?
                          and c.id = ${req.params.id}`;
 
@@ -56,8 +55,9 @@ module.exports = function (app) {
         },
         update: async function (req, res) {
             let userEmail = await security.getUserId(req);
-            let sql = `UPDATE ${tableName} as c LEFT JOIN pets AS p ON p.id = pet
-                       SET ? 
+            let sql = `UPDATE ${tableName} as c LEFT JOIN pets AS p
+                       ON p.id = pet
+                           SET ?
                        WHERE c.id = ${req.params.id}
                          and email = "${userEmail}"`;
             let data = req.body;
@@ -75,10 +75,29 @@ module.exports = function (app) {
         remove: async function (req, res) {
             let userEmail = await security.getUserId(req);
 
-            let sql = `DELETE c
-                       FROM ${tableName} AS c LEFT JOIN pets ON pets.id = pet
-                       WHERE c.id = ${req.params.id}
-                         and ?`;
+            let sql = `DELETE
+            c
+                       FROM
+            ${tableName}
+            AS
+            c
+            LEFT
+            JOIN
+            pets
+            ON
+            pets
+            .
+            id
+            =
+            pet
+            WHERE
+            c
+            .
+            id
+            =
+            ${req.params.id}
+            and
+            ?`;
 
 
             db.query(sql, {email: userEmail}, (err, result) => {

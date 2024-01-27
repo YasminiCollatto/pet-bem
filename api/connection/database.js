@@ -1,8 +1,7 @@
 const mysql = require('mysql2')
 
 /** @namespace application.app.connection.Database**/
-module.exports.open = function (ctrl){
-
+module.exports.open = function (ctrl) {
     try {
         const db = mysql.createConnection({
             host: 'localhost',
@@ -19,8 +18,6 @@ module.exports.open = function (ctrl){
     } catch (e) {
         console.error(e);
     }
-
-
 
 
 }

@@ -11,109 +11,110 @@
     <script src="/js/jquery.js"></script>
 </head>
 <body>
-    <div id="header"></div>
-    <div class="container">
-        <h1 class="my-4">Meus Pets <a href="gerenciar_pet" class="mx-5 btn btn-success"><i class="material-symbols-outlined">add</i>Adicionar pet </a></h1>
+<div id="header"></div>
+<div class="container">
+    <h1 class="my-4">Meus Pets <a href="gerenciar_pet" class="mx-5 btn btn-success"><i
+            class="material-symbols-outlined">add</i>Adicionar pet </a></h1>
 
-        <div class="row justify-content-center" id="pet-list">
-        </div>
+    <div class="row justify-content-center" id="pet-list">
     </div>
+</div>
 
 
-    <script> 
-        $(async function(){
+<script>
+    $(async function () {
 
-            $("#header").load("header.html", function(response, status, xhr) {
-            if(status == "success") {
+        $("#header").load("header.html", function (response, status, xhr) {
+            if (status == "success") {
                 $("#btn-pet").addClass("btn-dark");
             }
+        });
+
+        async function listPets() {
+            const path = '/api/pets'
+
+            const response = await fetch(path, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': sessionStorage.getItem('_token')
+                }
             });
 
-            async function listPets(){
-              const path = '/api/pets'
+            if (!response.ok) {
+                sessionStorage.clear();
+                location.href = '/'
+            } else {
+                const data = await response.json();
+                const tableData = document.getElementById('pet-list');
+                tableData.innerHTML = "";
 
-              const response = await fetch(path, {
-                  method: 'GET',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      'x-access-token': sessionStorage.getItem('_token')
-                  }
-              });
+                // Use a foreach loop to iterate over the data array and populate the table
+                data.forEach(function (item) {
+                    const row = document.createElement('div');
+                    row.className = 'col-md-4 mt-3';
+                    const card = document.createElement('div');
+                    card.className = 'card shadow-lg';
+                    const body = document.createElement('div');
+                    body.className = 'card-body';
+                    const title = document.createElement('h5')
+                    title.className = 'card-title';
+                    title.textContent = item.nome;
+                    const details = document.createElement('p');
+                    details.className = 'card-subtitle mb-2 text-muted';
+                    details.textContent = `${item.raca} - ${item.idade} anos`
+                    const editButton = document.createElement('button');
+                    editButton.className = "btn mr-5";
+                    editButton.innerHTML = "<i class=\"material-symbols-outlined\">edit</i>"
+                    editButton
+                    editButton.addEventListener('click', function () {
+                        location.href = "gerenciar_pet?id=" + item.id
+                    })
 
-              if (!response.ok) {
-                  sessionStorage.clear();
-                  location.href = '/'
-              } else {
-                  const data = await response.json();
-                  const tableData = document.getElementById('pet-list');
-                  tableData.innerHTML = "";
+                    const removeButton = document.createElement('button');
+                    removeButton.className = "m-3 btn btn-danger ";
+                    removeButton.innerHTML = "<i class=\"material-symbols-outlined\">delete</i>";
+                    removeButton.addEventListener('click', async function () {
+                        if (confirm("Deseja realmente apagar esse Pet?")) {
+                            await removePet(item.id)
+                        }
+                    })
 
-                  // Use a foreach loop to iterate over the data array and populate the table
-                  data.forEach(function(item) {
-                      const row = document.createElement('div');
-                      row.className = 'col-md-4 mt-3';
-                      const card = document.createElement('div');
-                      card.className = 'card shadow-lg';
-                      const body = document.createElement('div');
-                      body.className = 'card-body';
-                      const title = document.createElement('h5')
-                      title.className = 'card-title';
-                      title.textContent = item.nome;
-                      const details = document.createElement('p');
-                      details.className = 'card-subtitle mb-2 text-muted';
-                      details.textContent = `${item.raca} - ${item.idade} anos`
-                      const editButton = document.createElement('button');
-                      editButton.className = "btn mr-5";
-                      editButton.innerHTML = "<i class=\"material-symbols-outlined\">edit</i>"
-                      editButton
-                      editButton.addEventListener('click', function (){
-                          location.href = "gerenciar_pet?id=" + item.id
-                      })
+                    body.appendChild(title);
+                    body.appendChild(details);
+                    body.appendChild(editButton);
+                    body.appendChild(removeButton);
 
-                      const removeButton = document.createElement('button');
-                      removeButton.className = "m-3 btn btn-danger ";
-                      removeButton.innerHTML = "<i class=\"material-symbols-outlined\">delete</i>";
-                      removeButton.addEventListener('click', async function (){
-                          if(confirm("Deseja realmente apagar esse Pet?")) {
-                              await removePet(item.id)
-                          }
-                      })
+                    card.appendChild(body);
+                    row.appendChild(card);
+                    tableData.appendChild(row);
 
-                      body.appendChild(title);
-                      body.appendChild(details);
-                      body.appendChild(editButton);
-                      body.appendChild(removeButton);
-
-                      card.appendChild(body);
-                      row.appendChild(card);
-                      tableData.appendChild(row);
-
-                  });
-              }
-            }
-
-            async function removePet(id){
-                const path = '/api/pets/'+ id;
-
-                const response = await fetch(path, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': sessionStorage.getItem('_token')
-                    }
                 });
-
-                if (!response.ok) {
-                    sessionStorage.clear();
-                    location.href = '/'
-                } else {
-                    await listPets();
-                }
             }
+        }
 
-            await listPets();
+        async function removePet(id) {
+            const path = '/api/pets/' + id;
 
-        });
-    </script> 
+            const response = await fetch(path, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': sessionStorage.getItem('_token')
+                }
+            });
+
+            if (!response.ok) {
+                sessionStorage.clear();
+                location.href = '/'
+            } else {
+                await listPets();
+            }
+        }
+
+        await listPets();
+
+    });
+</script>
 </body>
 </html>

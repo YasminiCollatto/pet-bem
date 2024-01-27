@@ -1,6 +1,4 @@
 /** @namespace application.app.controllers.vacinas**/
-
-const utf8 = require("utf8");
 module.exports = function (app) {
     const security = app.security.JWT;
     const tableName = 'vacinas';
@@ -30,8 +28,9 @@ module.exports = function (app) {
         },
         list: async function (req, res) {
             let userEmail = await security.getUserId(req);
-            let sql = `SELECT v.*,email, nome as pet
-                       FROM ${tableName} AS v INNER JOIN pets ON pets.id = v.pet
+            let sql = `SELECT v.*, email, nome as pet
+                       FROM ${tableName} AS v
+                                INNER JOIN pets ON pets.id = v.pet
                        WHERE ?`;
             let data = {
                 email: userEmail
@@ -44,8 +43,9 @@ module.exports = function (app) {
         },
         get: async function (req, res) {
             let userEmail = await security.getUserId(req)
-            let sql = `SELECT v.*,email
-                       FROM ${tableName} AS v LEFT JOIN pets ON pets.id = pet
+            let sql = `SELECT v.*, email
+                       FROM ${tableName} AS v
+                                LEFT JOIN pets ON pets.id = pet
                        WHERE email = ?
                          and v.id = ${req.params.id}`;
 
@@ -58,8 +58,9 @@ module.exports = function (app) {
         update: async function (req, res) {
             delete req.body.id;
             let userEmail = await security.getUserId(req);
-            let sql = `UPDATE ${tableName} AS v LEFT JOIN pets AS p ON p.id = pet
-                       SET ? 
+            let sql = `UPDATE ${tableName} AS v LEFT JOIN pets AS p
+                       ON p.id = pet
+                           SET ?
                        WHERE v.id = ${req.params.id}
                          and email = "${userEmail}"`;
             let data = req.body;
@@ -76,10 +77,29 @@ module.exports = function (app) {
         remove: async function (req, res) {
             let userEmail = await security.getUserId(req);
 
-            let sql = `DELETE v
-                       FROM ${tableName} AS v LEFT JOIN pets ON pets.id = pet
-                       WHERE v.id = ${req.params.id}
-                         and ?`;
+            let sql = `DELETE
+            v
+                       FROM
+            ${tableName}
+            AS
+            v
+            LEFT
+            JOIN
+            pets
+            ON
+            pets
+            .
+            id
+            =
+            pet
+            WHERE
+            v
+            .
+            id
+            =
+            ${req.params.id}
+            and
+            ?`;
 
 
             db.query(sql, {email: userEmail}, (err, result) => {

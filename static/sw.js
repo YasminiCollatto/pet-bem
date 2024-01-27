@@ -36,7 +36,7 @@ const test = [
 const STATIC_CACHE_VERSION = `static-v1-${new Date().getTime()}`
 
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', function (event) {
     console.log(caches)
     console.log("SW Install Event: Is in the process");
     const onSuccessCachesOpen = (cache) => {
