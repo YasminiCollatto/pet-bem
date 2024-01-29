@@ -16,14 +16,14 @@ module.exports = function (app) {
             try {
                 db.query(sql, data, (err, result) => {
                     if (err) {
-                        Response.error(res, err)
+                        res.status(500).send(err)
                     }
-                    Response.success(res, {
+                    res.status(201).json( {
                         msg: 'Cadastrado com sucesso!'
                     })
                 });
             } catch (e) {
-                Response.error(res, e)
+                res.status(500).send(err)
             }
         },
         login: async function (req, res) {
